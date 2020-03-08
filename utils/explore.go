@@ -1,0 +1,96 @@
+// licensed Materials - Property of IBM
+// (C) Copyright IBM Corporation 2016, 2019 All Rights Reserved
+// US Government Users Restricted Rights - Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+
+package utils
+
+import (
+	"encoding/json"
+
+	dplv1alpha1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
+	subv1alpha1 "github.com/open-cluster-management/multicloud-operators-subscription/pkg/apis/apps/v1"
+	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
+	"k8s.io/apimachinery/pkg/types"
+	"k8s.io/klog"
+)
+
+const (
+	ResourceLabelName = "name"
+)
+
+//DplMap store all dpl names for a cluster [dplName]
+type DplMap struct {
+	DplResourceMap map[string]*dplv1alpha1.Deployable
+}
+
+//GetUniqueDeployables get unique deployable array
+func GetUniqueDeployables(allDpls []*dplv1alpha1.Deployable) []*dplv1alpha1.Deployable {
+	dplmap := make(map[string]*dplv1alpha1.Deployable)
+
+	for _, dpl := range allDpls {
+		dplkey := types.NamespacedName{Name: dpl.Name, Namespace: dpl.Namespace}.String()
+		dplmap[dplkey] = dpl.DeepCopy()
+	}
+
+	var newdpls []*dplv1alpha1.Deployable
+	for _, newdpl := range dplmap {
+		newdpls = append(newdpls, newdpl.DeepCopy())
+	}
+
+	return newdpls
+}
+
+//GetUniqueSubscriptions get unique subscription array
+func GetUniqueSubscriptions(allSubs []*subv1alpha1.Subscription) []*subv1alpha1.Subscription {
+	submap := make(map[string]*subv1alpha1.Subscription)
+
+	for _, sub := range allSubs {
+		subkey := types.NamespacedName{Name: sub.Name, Namespace: sub.Namespace}.String()
+		submap[subkey] = sub.DeepCopy()
+	}
+
+	var newsubs []*subv1alpha1.Subscription
+	for _, newsub := range submap {
+		newsubs = append(newsubs, newsub.DeepCopy())
+	}
+
+	return newsubs
+}
+
+//PrintAllClusterDplMap print all cluster deployable map
+func PrintAllClusterDplMap(allClusterDplMap map[string]*DplMap) {
+	for cluster, dplmap := range allClusterDplMap {
+		for dplname, dpl := range dplmap.DplResourceMap {
+			template := &unstructured.Unstructured{}
+			templateKind := ""
+
+			if dpl.Spec.Template != nil {
+				err := json.Unmarshal(dpl.Spec.Template.Raw, template)
+				if err == nil {
+					templateKind = template.GetKind()
+				}
+			}
+
+			klog.V(1).Infof("cluster: %#v, dpl: %#v, dpl template kind: %#v", cluster, dplname, templateKind)
+		}
+	}
+}
+
+//AppendClusterDplMap append dpl and its deployed cluster to allClusterDplMap
+func AppendClusterDplMap(statusdpl dplv1alpha1.Deployable, dpl dplv1alpha1.Deployable, allClusterDplMap map[string]*DplMap) {
+	if statusdpl.Status.Phase == "Propagated" || statusdpl.Status.Phase == "Deployed" {
+		for cluster := range statusdpl.Status.PropagatedStatus {
+			dplmap, ok := allClusterDplMap[cluster]
+
+			if !ok {
+				// register new dpl name
+				dplmap = &DplMap{
+					DplResourceMap: make(map[string]*dplv1alpha1.Deployable),
+				}
+			}
+
+			dplmap.DplResourceMap[dpl.Name] = dpl.DeepCopy()
+			allClusterDplMap[cluster] = dplmap
+		}
+	}
+}

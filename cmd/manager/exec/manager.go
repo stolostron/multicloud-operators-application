@@ -55,8 +55,8 @@ import (
 // Change below variables to serve metrics on different host or port.
 var (
 	metricsHost               = "0.0.0.0"
-	metricsPort         int32 = 8383
-	operatorMetricsPort int32 = 8686
+	metricsPort         int32 = 8386
+	operatorMetricsPort int32 = 8689
 )
 
 func printVersion() {

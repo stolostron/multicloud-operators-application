@@ -59,6 +59,11 @@ spec:
     placementRef:
       kind: PlacementRule
       name: towhichcluster
+  overrides:
+  - clusterName: "/"
+    clusterOverrides:
+    - path: "metadata.namespace"
+      value: default
 ---
 apiVersion: apps.open-cluster-management.io/v1
 kind: Deployable

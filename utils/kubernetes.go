@@ -16,6 +16,7 @@ package utils
 
 import (
 	"io/ioutil"
+	"path/filepath"
 	"reflect"
 
 	"github.com/ghodss/yaml"
@@ -26,7 +27,6 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/client-go/rest"
 	"k8s.io/klog"
-	"path/filepath"
 )
 
 // ConvertLabels coverts label selector to lables.Selector

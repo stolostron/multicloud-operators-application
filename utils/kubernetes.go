@@ -26,6 +26,7 @@ import (
 	"k8s.io/apimachinery/pkg/labels"
 	"k8s.io/client-go/rest"
 	"k8s.io/klog"
+	"path/filepath"
 )
 
 // ConvertLabels coverts label selector to lables.Selector
@@ -57,6 +58,8 @@ func CheckAndInstallCRD(crdconfig *rest.Config, pathname string) error {
 	var crdobj crdv1beta1.CustomResourceDefinition
 
 	var crddata []byte
+
+	pathname = filepath.Clean(pathname)
 
 	crddata, err = ioutil.ReadFile(pathname)
 

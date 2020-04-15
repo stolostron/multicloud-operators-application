@@ -74,4 +74,9 @@ tags
 ### VisualStudioCode ###
 .vscode/*
 .history
+### MacOs
+.DS_Store
 # End of https://www.gitignore.io/api/go,vim,emacs,visualstudiocode
+.build-harness-bootstrap
+build-harness-extensions
+build-harness

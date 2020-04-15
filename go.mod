@@ -3,6 +3,7 @@ module github.com/open-cluster-management/multicloud-operators-application
 require (
 	github.com/ghodss/yaml v1.0.1-0.20190212211648-25d852aebe32
 	github.com/kubernetes-sigs/application v0.8.1
+	github.com/onsi/gomega v1.7.0
 	github.com/open-cluster-management/multicloud-operators-deployable v0.0.0-20200305002029-e8093169e4ff
 	github.com/open-cluster-management/multicloud-operators-subscription v0.0.0-20200306173021-f1884746471e
 	github.com/operator-framework/operator-sdk v0.15.1-0.20200305193915-22b0724684a0

@@ -8,7 +8,7 @@ ENV OPERATOR=/usr/local/bin/multicluster-operators-application \
 COPY deploy/crds/*.yaml  /usr/local/etc/application/crds/
 
 # install operator binary
-COPY build/_output/bin/multicluster-operators-application ${OPERATOR}
+COPY multicluster-operators-application ${OPERATOR}
 
 COPY build/bin /usr/local/bin
 RUN  /usr/local/bin/user_setup

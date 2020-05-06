@@ -120,7 +120,7 @@ coverage:
 ############################################################
 
 build:
-	@common/scripts/gobuild.sh build/_output/bin/$(IMG) ./cmd/manager
+	@common/scripts/gobuild.sh multicluster-operators-application ./cmd/manager
 
 local:
 	@GOOS=darwin common/scripts/gobuild.sh build/_output/bin/$(IMG) ./cmd/manager

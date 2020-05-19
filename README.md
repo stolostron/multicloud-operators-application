@@ -40,7 +40,7 @@ You can reach the maintainers of this project at:
 
 ### Prerequisites
 
-xxx...
+xxxx...
 
 ### XXXXX
 

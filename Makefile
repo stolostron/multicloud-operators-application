@@ -60,7 +60,9 @@ GITHUB_TOKEN ?=
 USE_VENDORIZED_BUILD_HARNESS ?=
 OPENSHIFT_CI ?=
 
-ifdef OPENSHIFT_CI
+ifdef CI
+	-include /opt/build-harness/Makefile.build-harness-openshift-ci
+else ifdef OPENSHIFT_CI
 	-include /opt/build-harness/Makefile.build-harness-openshift-ci
 else ifdef USE_VENDORIZED_BUILD_HARNESS
 	-include vbh/.build-harness-vendorized

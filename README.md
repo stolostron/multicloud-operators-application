@@ -32,7 +32,7 @@ Check the [CONTRIBUTING Doc](CONTRIBUTING.md) for how to contribute to the repo.
 
 You can reach the maintainers of this project at:
 
-- [#xxx on Slack] (link to maintainer in slack)
+- [#xxx on Slack](link to maintainer in slack)
 
 ------
 

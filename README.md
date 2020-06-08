@@ -16,7 +16,7 @@
     - [Prerequisites](#prerequisites)
     - [XXXXX](#xxxxx)
     - [Trouble shooting](#trouble-shooting)
-- [XXX References](#xxx-references)
+- [XXX References](#xxxx-references)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 

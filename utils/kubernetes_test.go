@@ -55,6 +55,6 @@ func TestCheckAndInstallCRD(t *testing.T) {
 	}()
 
 	//Test:  create testfoo crd
-	err = CheckAndInstallCRD(cfg, "../deploy/crds/app_v1beta1_application.yaml")
+	err = CheckAndInstallCRD(cfg, "../deploy/crds/app.k8s.io_applications.yaml")
 	g.Expect(err).NotTo(gomega.HaveOccurred())
 }

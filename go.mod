@@ -5,7 +5,6 @@ require (
 	github.com/kubernetes-sigs/application v0.8.1
 	github.com/onsi/ginkgo v1.12.0
 	github.com/onsi/gomega v1.9.0
-	github.com/open-cluster-management/multicloud-operators-channel v1.0.1-0.20200604182604-841a36e63aa9
 	github.com/open-cluster-management/multicloud-operators-deployable v0.0.0-20200603180154-d1d17d718c30
 	github.com/open-cluster-management/multicloud-operators-subscription v0.0.0-20200608164921-3102dd215933
 	github.com/operator-framework/operator-sdk v0.18.1

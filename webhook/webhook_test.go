@@ -50,7 +50,7 @@ var _ = Describe("test application validation logic", func() {
 		)
 
 		BeforeEach(func() {
-			// Create the Channel object and expect the Reconcile
+			// Create the Application object and expect the Reconcile
 			Expect(k8sClient.Create(context.TODO(), appIns.DeepCopy())).NotTo(HaveOccurred())
 		})
 

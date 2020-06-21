@@ -27,7 +27,7 @@ type ControllerRunOptions struct {
 
 var options = ControllerRunOptions{
 	MetricsAddr:        "",
-	ApplicationCRDFile: "/usr/local/etc/application/crds/app_v1beta1_application.yaml",
+	ApplicationCRDFile: "/usr/local/etc/application/crds/app.k8s.io_applications.yaml",
 }
 
 // ProcessFlags parses command line parameters into options

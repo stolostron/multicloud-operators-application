@@ -18,6 +18,7 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"path/filepath"
 	"runtime"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
@@ -28,6 +29,7 @@ import (
 	"github.com/open-cluster-management/multicloud-operators-application/pkg/apis"
 	"github.com/open-cluster-management/multicloud-operators-application/pkg/controller"
 	"github.com/open-cluster-management/multicloud-operators-application/utils"
+	appWebhook "github.com/open-cluster-management/multicloud-operators-application/webhook"
 
 	appapis "github.com/kubernetes-sigs/application/pkg/apis"
 
@@ -190,6 +192,21 @@ func RunManager(sig <-chan struct{}) {
 			klog.Info("Install prometheus-operator in your cluster to create ServiceMonitor objects", "error", err.Error())
 		}
 	}
+
+	// Setup webhooks
+	klog.Info("setting up webhook server")
+
+	hookServer := mgr.GetWebhookServer()
+	certDir := filepath.Join(os.TempDir(), "k8s-webhook-server", "serving-certs")
+
+	caCert, err := appWebhook.WireUpWebhook(mgr.GetClient(), hookServer, certDir)
+	if err != nil {
+		klog.Error(err, "failed to wire up webhook")
+		os.Exit(1)
+	}
+
+	go appWebhook.WireUpWebhookSupplymentryResource(mgr, sig, appWebhook.WebhookServiceName,
+		appWebhook.WebhookValidatorName, certDir, caCert)
 
 	klog.Info("Starting the Cmd.")
 

@@ -44,7 +44,7 @@ const (
 	tlsKey = "tls.key"
 
 	WebhookPort          = 9442
-	ValidatorPath        = "/v1-validate"
+	ValidatorPath        = "/app-validate"
 	WebhookValidatorName = "application-webhook-validator"
 	WebhookServiceName   = "multicluster-operators-application-svc"
 

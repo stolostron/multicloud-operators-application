@@ -197,7 +197,7 @@ func RunManager(sig <-chan struct{}) {
 	klog.Info("setting up webhook server")
 
 	hookServer := mgr.GetWebhookServer()
-	certDir := filepath.Join(os.TempDir(), "k8s-webhook-server", "serving-certs")
+	certDir := filepath.Join(os.TempDir(), "k8s-webhook-server", "application-serving-certs")
 
 	caCert, err := appWebhook.WireUpWebhook(mgr.GetClient(), hookServer, certDir)
 	if err != nil {

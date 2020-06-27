@@ -49,7 +49,7 @@ type Certificate struct {
 // signed pair is stored at the certDir
 func GenerateWebhookCerts(certDir string) ([]byte, error) {
 	if len(certDir) == 0 {
-		certDir = filepath.Join(os.TempDir(), "k8s-webhook-server", "serving-certs")
+		certDir = filepath.Join(os.TempDir(), "k8s-webhook-server", "application-serving-certs")
 	}
 
 	podNs, err := findEnvVariable(podNamespaceEnvVar)

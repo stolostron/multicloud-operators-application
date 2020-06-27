@@ -82,7 +82,7 @@ var _ = Describe("test application validation logic", func() {
 				Expect(lMgr.Start(sstop)).Should(Succeed())
 			}()
 
-			certDir = filepath.Join(os.TempDir(), "k8s-webhook-server", "serving-certs")
+			certDir = filepath.Join(os.TempDir(), "k8s-webhook-server", "application-serving-certs")
 			testNs = "default"
 			os.Setenv("POD_NAMESPACE", testNs)
 

@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: multicloud-operators-application
+  name: multicluster-operators-application
 spec:
   replicas: 1
   selector:
     matchLabels:
-      name: multicloud-operators-application
+      name: multicluster-operators-application
   template:
     metadata:
       labels:
-        name: multicloud-operators-application
+        name: multicluster-operators-application
     spec:
-      serviceAccountName: multicloud-operators-application
+      serviceAccountName: multicluster-operators-application
       containers:
-        - name: multicloud-operators-application
+        - name: multicluster-operators-application
           # Replace this with the built image name
           image: REPLACE_IMAGE
           command:
-          - multicloud-operators-application
+          - multicluster-operators-application
           imagePullPolicy: Always
           env:
             - name: WATCH_NAMESPACE
@@ -30,4 +30,4 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: OPERATOR_NAME
-              value: "multicloud-operators-application"
+              value: "multicluster-operators-application"

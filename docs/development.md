@@ -5,7 +5,6 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Development Guide](#development-guide)
-    - [Environment variable](#environment-variable)
     - [Launch Dev mode](#launch-dev-mode)
     - [Build a local image](#build-a-local-image)
 

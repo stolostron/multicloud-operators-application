@@ -10,13 +10,15 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [What is the multicloud-operators-application](#what-is-the-multicloud-operators-application)
-- [Community, discussion, contribution, and support](#community-discussion-contribution-and-support)
-- [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [XXXXX](#xxxxx)
-    - [Trouble shooting](#trouble-shooting)
-- [XXX References](#xxx-references)
+- [multicloud-operators-application](#multicloud-operators-application)
+    - [What is the multicloud-operators-application](#what-is-the-multicloud-operators-application)
+    - [Community, discussion, contribution, and support](#community-discussion-contribution-and-support)
+    - [Getting Started](#getting-started)
+        - [Prerequisites](#prerequisites)
+        - [Deployment](#deployment)
+    - [Security Response](#security-response)
+    - [References](#references)
+        - [multicloud-operators repositories](#multicloud-operators-repositories)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -30,27 +32,29 @@ It is the Application wrapper for selecting involved subscriptions and deployabl
 
 Check the [CONTRIBUTING Doc](CONTRIBUTING.md) for how to contribute to the repo.
 
-You can reach the maintainers of this project at:
-
-- [#xxx on Slack] (link to maintainer in slack)
-
 ------
 
 ## Getting Started
 
 ### Prerequisites
 
-xxx...
+Check the [Development Doc](docs/development.md) for how to contribute to the repo.
 
-### XXXXX
+### Deployment
 
-xxx...
+Check the [Deployment Doc](docs/deployment.md) for how to deploy the operator.
 
-### Trouble shooting
+## Security Response
 
-Please refer to [Trouble shooting documentation](docs/trouble_shooting.md) for further info.
+Check the [Security Doc](SECURITY.md) if you've found a security issue.
 
-## XXX References
+## References
 
-If you have any further question about xxx, please refer to
-[XXX help documentation](docs/xxx_help.md) for further information.
+### multicloud-operators repositories
+
+- [multicloud-operators-application](https://github.com/open-cluster-management/multicloud-operators-application)
+- [multicloud-operators-channel](https://github.com/open-cluster-management/multicloud-operators-channel)
+- [multicloud-operators-deployable](https://github.com/open-cluster-management/multicloud-operators-deployable)
+- [multicloud-operators-placementrule](https://github.com/open-cluster-management/multicloud-operators-placementrule)
+- [multicloud-operators-subscription](https://github.com/open-cluster-management/multicloud-operators-subscription)
+- [multicloud-operators-subscription-release](https://github.com/open-cluster-management/multicloud-operators-subscription-release)

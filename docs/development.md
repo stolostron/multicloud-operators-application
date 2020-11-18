@@ -19,7 +19,9 @@ export GITHUB_USER=<github_user>
 export GITHUB_TOKEN=<github_token>
 make
 make build
-./build/_output/bin/multicluster-operators-application
+kubectl apply -f deploy/crds/standalone
+export POD_NAMESPACE=<pod namespace to wire up webhook>
+./build/_output/bin/multicluster-operators-application --application-crd-file deploy/crds/app.k8s.io_applications.yaml 
 ```
 
 ## Build a local image

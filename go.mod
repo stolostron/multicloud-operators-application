@@ -7,9 +7,7 @@ require (
 	github.com/onsi/gomega v1.9.0
 	github.com/open-cluster-management/multicloud-operators-deployable v0.0.0-20200603180154-d1d17d718c30
 	github.com/open-cluster-management/multicloud-operators-subscription v0.0.0-20200608164921-3102dd215933
-	github.com/operator-framework/operator-sdk v0.18.1
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/common v0.9.1
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.6.0
 	k8s.io/api v0.18.2

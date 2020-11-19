@@ -1,26 +1,23 @@
 module github.com/open-cluster-management/multicloud-operators-application
 
+go 1.15
+
 require (
 	github.com/ghodss/yaml v1.0.1-0.20190212211648-25d852aebe32
 	github.com/kubernetes-sigs/application v0.8.1
-	github.com/onsi/ginkgo v1.12.0
-	github.com/onsi/gomega v1.9.0
-	github.com/open-cluster-management/multicloud-operators-deployable v0.0.0-20200603180154-d1d17d718c30
-	github.com/open-cluster-management/multicloud-operators-subscription v0.0.0-20200608164921-3102dd215933
+	github.com/onsi/ginkgo v1.12.1
+	github.com/onsi/gomega v1.10.1
+	github.com/open-cluster-management/multicloud-operators-deployable v0.0.0-20201119200129-dcb15e7afa3f
+	github.com/open-cluster-management/multicloud-operators-subscription v1.0.0-2020-05-12-21-17-19.0.20201119221117-2470149278b9
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.6.0
-	k8s.io/api v0.18.2
-	k8s.io/apiextensions-apiserver v0.18.2
-	k8s.io/apimachinery v0.18.2
-	k8s.io/client-go v13.0.0+incompatible
+	github.com/stretchr/testify v1.6.1
+	k8s.io/api v0.19.3
+	k8s.io/apiextensions-apiserver v0.19.3
+	k8s.io/apimachinery v0.19.3
+	k8s.io/client-go v12.0.0+incompatible
 	k8s.io/klog v1.0.0
-	sigs.k8s.io/controller-runtime v0.6.0
+	sigs.k8s.io/controller-runtime v0.6.3
 )
 
-replace (
-	github.com/Azure/go-autorest => github.com/Azure/go-autorest v13.3.2+incompatible // Required by OLM
-	k8s.io/client-go => k8s.io/client-go v0.18.2 // Required by prometheus-operator
-)
-
-go 1.15
+replace k8s.io/client-go => k8s.io/client-go v0.19.3

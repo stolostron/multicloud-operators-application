@@ -20,7 +20,7 @@ All contributions to the repository must be submitted under the terms of the [Ap
 
 ## Certificate of Origin
 
-By contributing to this project you agree to the Developer Certificate of
+By contributing to this project, you agree to the Developer Certificate of
 Origin (DCO). This document was created by the Linux Kernel community and is a
 simple statement that you, as a contributor, have the legal right to make the
 contribution. See the [DCO](DCO) file for details.
@@ -43,7 +43,7 @@ Repo maintainers can assign you an issue or pull request by leaving a
 
 ## Pre-check before submitting a PR
 
-After your PR is ready to commit, please run following commands to check your code.
+After your PR is ready to commit, run following commands to check your code:
 
 ```shell
 make verify
@@ -59,4 +59,4 @@ export BUILD_LOCALLY=1
 make
 ```
 
-Now, you can follow the [getting started guide](./README.md#getting-started) to work with the open-cluster-management multicloud-operators-application repository.
+Now, you can follow the [Getting started guide](./README.md#getting-started) to work with the open-cluster-management multicloud-operators-application repository.

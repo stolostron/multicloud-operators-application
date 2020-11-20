@@ -30,6 +30,8 @@ Multicloud Application Selectors
 
 ## Community, discussion, contribution, and support
 
+<!-- I think having the header here suggests that we will tell them a bit more, rather than just point to the doc. If we keep it like this across the readme, we really don't need these headers; I can write a paragraph and tell them to check these docs for prereqs, contibuting guidelines, and security issues. That is better than the headers. Let me know what you think -->
+
 Check the [CONTRIBUTING Doc](CONTRIBUTING.md) to learn how you can contribute to the repo.
 
 ------

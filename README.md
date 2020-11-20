@@ -26,11 +26,11 @@ Multicloud Application Selectors
 
 ## What is the multicloud-operators-application
 
-It is the Application wrapper for selecting involved subscriptions and deployables
+`multicloud-operators-application` is the Application wrapper that is used for selecting involved subscriptions and deployables.
 
 ## Community, discussion, contribution, and support
 
-Check the [CONTRIBUTING Doc](CONTRIBUTING.md) for how to contribute to the repo.
+Check the [CONTRIBUTING Doc](CONTRIBUTING.md) to learn how you can contribute to the repo.
 
 ------
 

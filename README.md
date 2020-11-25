@@ -31,7 +31,7 @@ Go to the [Contributing guide](CONTRIBUTING.md) to learn how to get involved.
 
 - View the [Deployment guide](docs/deployment.md) to learn how to deploy the operator.
 
-- Check the [Security Doc](SECURITY.md) if you've found a security issue.
+- Check the [Security guide](SECURITY.md) if you need to report a security issue.
 
 ## References
 

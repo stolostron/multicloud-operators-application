@@ -12,19 +12,14 @@
 
 - [multicloud-operators-application](#multicloud-operators-application)
     - [What is the multicloud-operators-application](#what-is-the-multicloud-operators-application)
-    - [Community, discussion, contribution, and support](#community-discussion-contribution-and-support)
     - [Getting Started](#getting-started)
-        - [Prerequisites](#prerequisites)
-        - [Deployment](#deployment)
-    - [Security Response](#security-response)
     - [References](#references)
-        - [multicloud-operators repositories](#multicloud-operators-repositories)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 Multicloud Application Selectors
 
-What is the multicloud-operators-application?
+## What is the multicloud-operators-application?
 
 The `multicloud-operators-application` is the application wrapper for selecting involved subscriptions and deployables. In this open community, you can join the discussion, contribute code, and support development.
 

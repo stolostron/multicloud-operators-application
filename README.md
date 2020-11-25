@@ -24,38 +24,28 @@
 
 Multicloud Application Selectors
 
-## What is the multicloud-operators-application
+What is the multicloud-operators-application?
 
-It is the Application wrapper for selecting involved subscriptions and deployables
+The `multicloud-operators-application` is the application wrapper for selecting involved subscriptions and deployables. In this open community, you can join the discussion, contribute code, and support development.
 
-## Community, discussion, contribution, and support
+Go to the [Contributing guide](CONTRIBUTING.md) to learn how to get involved.
 
-Check the [CONTRIBUTING Doc](CONTRIBUTING.md) for how to contribute to the repo.
+## Getting started
 
-------
+- Clone and build an image with the [Development guide](docs/development.md).
 
-## Getting Started
+- View the [Deployment guide](docs/deployment.md) to learn how to deploy the operator.
 
-### Prerequisites
-
-Check the [Development Doc](docs/development.md) for how to contribute to the repo.
-
-### Deployment
-
-Check the [Deployment Doc](docs/deployment.md) for how to deploy the operator.
-
-## Security Response
-
-Check the [Security Doc](SECURITY.md) if you've found a security issue.
+- Check the [Security Doc](SECURITY.md) if you've found a security issue.
 
 ## References
 
-### multicloud-operators repositories
+- Access the following multicloud-operators repositories:
 
-- [multicloud-operators-application](https://github.com/open-cluster-management/multicloud-operators-application)
-- [multicloud-operators-channel](https://github.com/open-cluster-management/multicloud-operators-channel)
-- [multicloud-operators-deployable](https://github.com/open-cluster-management/multicloud-operators-deployable)
-- [multicloud-operators-placementrule](https://github.com/open-cluster-management/multicloud-operators-placementrule)
-- [multicloud-operators-subscription](https://github.com/open-cluster-management/multicloud-operators-subscription)
-- [multicloud-operators-subscription-release](https://github.com/open-cluster-management/multicloud-operators-subscription-release)
+    - [multicloud-operators-application](https://github.com/open-cluster-management/multicloud-operators-application)
+    - [multicloud-operators-channel](https://github.com/open-cluster-management/multicloud-operators-channel)
+    - [multicloud-operators-deployable](https://github.com/open-cluster-management/multicloud-operators-deployable)
+    - [multicloud-operators-placementrule](https://github.com/open-cluster-management/multicloud-operators-placementrule)
+    - [multicloud-operators-subscription](https://github.com/open-cluster-management/multicloud-operators-subscription)
+    - [multicloud-operators-subscription-release](https://github.com/open-cluster-management/multicloud-operators-subscription-release)
 

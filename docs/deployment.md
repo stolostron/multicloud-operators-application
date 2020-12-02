@@ -14,7 +14,7 @@
 
 The service account is `multicluster-operators-application`.
 
-The role `multicluster-operators-application` is binded to that service account.
+The role `multicluster-operators-application` binds to that service account.
 
 ### Deployment
 
@@ -27,7 +27,7 @@ kubectl apply -f deploy
 
 ## General process
 
-Application CR:
+See the following general application CR sample:
 
 ```yaml
 apiVersion: app.k8s.io/v1beta1

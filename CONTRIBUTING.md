@@ -41,7 +41,7 @@ Repo maintainers can assign you an issue or pull request by leaving an `/assign 
 
 ## Pre-check before submitting a PR
 
-After your PR is ready to commit, run following commands to check your code:
+After your PR is ready to commit, run the following commands to check your code:
 
 ```shell
 make verify

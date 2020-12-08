@@ -1,16 +1,18 @@
-# Development Guide
+# Development guide
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Development Guide](#development-guide)
-    - [Launch Dev mode](#launch-dev-mode)
+    - [Launch dev mode](#launch-dev-mode)
     - [Build a local image](#build-a-local-image)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Launch Dev mode
+## Launch dev mode
+
+Run the following command to launch developer mode:
 
 ```shell
 git clone git@github.com:open-cluster-management/multicloud-operators-application.git
@@ -25,6 +27,8 @@ export POD_NAMESPACE=<pod namespace to wire up webhook>
 ```
 
 ## Build a local image
+
+Build a local image by running the following command:
 
 ```shell
 git clone git@github.com:open-cluster-management/multicloud-operators-application.git

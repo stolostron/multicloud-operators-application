@@ -17,7 +17,7 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-Multicloud Application Selectors <!-- is this needed? -->
+Multicloud Application Selectors <!-- is this needed? seems like a random line-->
 
 ## What is the multicloud-operators-application?
 

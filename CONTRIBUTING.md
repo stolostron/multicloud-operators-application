@@ -5,8 +5,8 @@
 - [Contributing guidelines](#contributing-guidelines)
     - [Contributions](#contributions)
     - [Certificate of Origin](#certificate-of-origin)
-    - [Contributing A Patch](#contributing-a-patch)
-    - [Issue and Pull Request Management](#issue-and-pull-request-management)
+    - [Contributing a patch](#contributing-a-patch)
+    - [Issue and pull request management](#issue-and-pull-request-management)
     - [Pre-check before submitting a PR](#pre-check-before-submitting-a-pr)
     - [Build images](#build-images)
 
@@ -41,7 +41,7 @@ Repo maintainers can assign you an issue or pull request by leaving an `/assign 
 
 ## Pre-check before submitting a PR
 
-After your PR is ready to commit, run following commands to check your code:
+After your PR is ready to commit, run the following commands to check your code:
 
 ```shell
 make verify
@@ -57,4 +57,4 @@ export BUILD_LOCALLY=1
 make
 ```
 
-Now, you can follow the [Getting started guide](./README.md#getting-started) to work with the open-cluster-management multicloud-operators-application repository.
+Now, you can follow the [Getting started guide](./README.md#getting-started) to work with the open-cluster-management, multicloud-operators-application repository.

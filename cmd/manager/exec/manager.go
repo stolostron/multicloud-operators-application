@@ -145,10 +145,16 @@ func RunManager() {
 	// Setup webhooks
 	klog.Info("setting up webhook server")
 
+	clt, err := client.New(ctrl.GetConfigOrDie(), client.Options{})
+	if err != nil {
+		klog.Errorf("failed to create a client for webhook to get CA cert secret, err %v", err)
+		os.Exit(1)
+	}
+
 	hookServer := mgr.GetWebhookServer()
 	certDir := filepath.Join(os.TempDir(), "k8s-webhook-server", "application-serving-certs")
 
-	caCert, err := appWebhook.WireUpWebhook(mgr.GetClient(), hookServer, certDir)
+	caCert, err := appWebhook.WireUpWebhook(clt, mgr, hookServer, certDir)
 	if err != nil {
 		klog.Error(err, "failed to wire up webhook")
 		os.Exit(1)

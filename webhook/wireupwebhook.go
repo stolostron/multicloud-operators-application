@@ -61,14 +61,14 @@ const (
 
 var log = logf.Log.WithName("operator-application-webhook")
 
-func WireUpWebhook(clt client.Client, whk *webhook.Server, certDir string) ([]byte, error) {
+func WireUpWebhook(clt client.Client, mgr manager.Manager, whk *webhook.Server, certDir string) ([]byte, error) {
 	whk.Port = WebhookPort
 	whk.CertDir = certDir
 
 	log.Info("registering webhooks to the webhook server")
-	whk.Register(ValidatorPath, &webhook.Admission{Handler: &AppValidator{Client: clt}})
+	whk.Register(ValidatorPath, &webhook.Admission{Handler: &AppValidator{Client: mgr.GetClient()}})
 
-	return GenerateWebhookCerts(certDir)
+	return GenerateWebhookCerts(clt, certDir)
 }
 
 //assuming we have a service set up for the webhook, and the service is linking

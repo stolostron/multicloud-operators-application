@@ -15,37 +15,78 @@
 package webhook
 
 import (
+	"context"
 	"os"
-	"testing"
 
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+	corev1 "k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 	k8scertutil "k8s.io/client-go/util/cert"
 )
 
-func TestGenerateSignedWebhookCertificates(t *testing.T) {
-	os.Setenv(podNamespaceEnvVar, "test")
+var _ = Describe("self-sign cert", func() {
+	It("should generate CA cert and persist to secret", func() {
+		podNs := "test"
 
-	certDir := "/tmp/tmp-cert"
+		os.Setenv(podNamespaceEnvVar, podNs)
 
-	defer func() {
-		os.RemoveAll(certDir)
-		os.Unsetenv(podNamespaceEnvVar)
-	}()
+		certDir := "/tmp/tmp-cert"
 
-	ca, err := GenerateWebhookCerts(certDir)
-	if err != nil {
-		t.Errorf("Generate signed certificate failed, %v", err)
-	}
+		defer func() {
+			os.RemoveAll(certDir)
+			os.Unsetenv(podNamespaceEnvVar)
+		}()
 
-	if ca == nil {
-		t.Errorf("Generate signed certificate failed")
-	}
+		ca, err := GenerateWebhookCerts(k8sClient, certDir)
+		Expect(err).Should(Succeed())
+		Expect(ca).ShouldNot(BeNil())
 
-	canReadCertAndKey, err := k8scertutil.CanReadCertAndKey("/tmp/tmp-cert/tls.crt", "/tmp/tmp-cert/tls.key")
-	if err != nil {
-		t.Errorf("Generate signed certificate failed, %v", err)
-	}
+		canReadCertAndKey, err := k8scertutil.CanReadCertAndKey("/tmp/tmp-cert/tls.crt", "/tmp/tmp-cert/tls.key")
+		Expect(err).Should(Succeed())
+		Expect(canReadCertAndKey).Should(BeTrue())
 
-	if !canReadCertAndKey {
-		t.Errorf("Generate signed certificate failed")
-	}
-}
+		srtKey := types.NamespacedName{Name: WebhookServiceName, Namespace: podNs}
+
+		srtIns := &corev1.Secret{}
+		Expect(k8sClient.Get(context.TODO(), srtKey, srtIns)).Should(Succeed())
+		defer func() {
+			Expect(k8sClient.Delete(context.TODO(), srtIns)).Should(Succeed())
+		}()
+
+		Expect(srtIns.Data["crt"]).ShouldNot(HaveLen(0))
+		Expect(srtIns.Data["key"]).ShouldNot(HaveLen(0))
+	})
+
+	It("should get self-signed CA cert from exist secret", func() {
+		podNs := "test"
+
+		os.Setenv(podNamespaceEnvVar, podNs)
+		defer func() {
+			os.Unsetenv(podNamespaceEnvVar)
+		}()
+
+		cert := "my cert"
+		key := "my key"
+		srtIns := &corev1.Secret{
+			ObjectMeta: metav1.ObjectMeta{
+				Name:      WebhookServiceName,
+				Namespace: podNs,
+			},
+
+			Data: map[string][]byte{
+				"crt": []byte(cert),
+				"key": []byte(key),
+			},
+		}
+
+		Expect(k8sClient.Create(context.TODO(), srtIns)).Should(Succeed())
+
+		ca, err := getSelfSignedCACert(k8sClient, certName, types.NamespacedName{Name: srtIns.Name, Namespace: srtIns.Namespace})
+		Expect(err).Should(Succeed())
+
+		Expect(ca.Cert).Should(Equal(cert))
+		Expect(ca.Key).Should(Equal(key))
+	})
+})

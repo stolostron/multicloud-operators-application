@@ -86,7 +86,7 @@ var _ = Describe("test application validation logic", func() {
 			testNs = "default"
 			os.Setenv("POD_NAMESPACE", testNs)
 
-			caCert, err = GenerateWebhookCerts(certDir)
+			caCert, err = GenerateWebhookCerts(k8sClient, certDir)
 			Expect(err).Should(BeNil())
 			validatorName := "test-validator"
 			wbhSvcNm := "app-wbh-svc"

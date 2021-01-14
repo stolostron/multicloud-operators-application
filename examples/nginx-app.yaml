@@ -41,7 +41,7 @@ metadata:
     app: nginx-app-details
 spec:
   type: HelmRepo
-  pathname: https://kubernetes-charts.storage.googleapis.com/
+  pathname: https://charts.helm.sh/stable/
 ---
 apiVersion: apps.open-cluster-management.io/v1
 kind: Subscription

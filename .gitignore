@@ -3,6 +3,7 @@ build-harness
 build-harness-extensions
 build/_output
 build/_test
+test
 # Created by https://www.gitignore.io/api/go,vim,emacs,visualstudiocode
 ### Emacs ###
 # -*- mode: gitignore; -*-

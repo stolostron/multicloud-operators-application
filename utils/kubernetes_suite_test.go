@@ -55,7 +55,7 @@ func TestMain(m *testing.M) {
 	os.Exit(code)
 }
 
-// StartTestManager adds recFn
+// StartTestManager adds recFn.
 func StartTestManager(mgr manager.Manager, g *gomega.GomegaWithT) (chan struct{}, *sync.WaitGroup) {
 	stop := make(chan struct{})
 

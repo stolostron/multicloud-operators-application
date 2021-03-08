@@ -38,7 +38,7 @@ const VeryNoisy = 10
 
 var regexStripFnPreamble = regexp.MustCompile(`^.*\.(.*)$`)
 
-// GetFnName - get name of function
+// GetFnName - get name of function.
 func GetFnName() string {
 	fnName := "<unknown>"
 	// Skip this function, and fetch the PC and file for its parent
@@ -50,12 +50,12 @@ func GetFnName() string {
 	return fnName
 }
 
-// EnterFnString - called when enter a function
+// EnterFnString - called when enter a function.
 func EnterFnString() string {
 	return ""
 }
 
-// ExitFuString - called when exiting a function
+// ExitFuString - called when exiting a function.
 func ExitFuString(s string) {}
 
 // EventRecorder - record kubernetes event
@@ -63,7 +63,7 @@ type EventRecorder struct {
 	record.EventRecorder
 }
 
-// NewEventRecorder - create new event recorder from rect config
+// NewEventRecorder - create new event recorder from rect config.
 func NewEventRecorder(cfg *rest.Config, scheme *apiruntime.Scheme) (*EventRecorder, error) {
 	reccs, err := kubernetes.NewForConfig(cfg)
 	if err != nil {
@@ -81,7 +81,7 @@ func NewEventRecorder(cfg *rest.Config, scheme *apiruntime.Scheme) (*EventRecord
 	return rec, nil
 }
 
-// RecordEvent - record kuberentes event
+// RecordEvent - record kuberentes event.
 func (rec *EventRecorder) RecordEvent(obj apiruntime.Object, reason, msg string, err error) {
 	eventType := corev1.EventTypeNormal
 	evnetMsg := msg

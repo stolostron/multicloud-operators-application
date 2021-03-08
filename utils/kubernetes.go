@@ -30,7 +30,7 @@ import (
 	"k8s.io/klog"
 )
 
-// ConvertLabels coverts label selector to lables.Selector
+// ConvertLabels coverts label selector to lables.Selector.
 func ConvertLabels(labelSelector *metav1.LabelSelector) (labels.Selector, error) {
 	if labelSelector != nil {
 		selector, err := metav1.LabelSelectorAsSelector(labelSelector)
@@ -46,7 +46,7 @@ func ConvertLabels(labelSelector *metav1.LabelSelector) (labels.Selector, error)
 }
 
 // CheckAndInstallCRD checks if deployable belongs to this cluster
-// managed cluster annotation matches or no managed cluster annotation (local)
+// managed cluster annotation matches or no managed cluster annotation (local).
 func CheckAndInstallCRD(crdconfig *rest.Config, pathname string) error {
 	var err error
 

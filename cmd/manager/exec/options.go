@@ -30,7 +30,7 @@ var options = ControllerRunOptions{
 	ApplicationCRDFile: "/usr/local/etc/application/crds/app.k8s.io_applications.yaml",
 }
 
-// ProcessFlags parses command line parameters into options
+// ProcessFlags parses command line parameters into options.
 func ProcessFlags() {
 	flag := pflag.CommandLine
 

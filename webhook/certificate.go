@@ -143,7 +143,7 @@ func getSignedCert(clt client.Client, whKey types.NamespacedName,
 }
 
 // GenerateWebhookCerts generate self singed CA and a signed cert pair. The
-// signed pair is stored at the certDir
+// signed pair is stored at the certDir.
 func GenerateWebhookCerts(clt client.Client, certDir string) ([]byte, error) {
 	if len(certDir) == 0 {
 		certDir = filepath.Join(os.TempDir(), "k8s-webhook-server", "application-serving-certs")
@@ -187,7 +187,7 @@ func GenerateWebhookCerts(clt client.Client, certDir string) ([]byte, error) {
 	return []byte(ca.Cert), nil
 }
 
-// GenerateSelfSignedCACert generates a self signed CA
+// GenerateSelfSignedCACert generates a self signed CA.
 func GenerateSelfSignedCACert(cn string) (Certificate, error) {
 	ca := Certificate{}
 
@@ -211,7 +211,7 @@ func GenerateSelfSignedCACert(cn string) (Certificate, error) {
 	return ca, err
 }
 
-// GenerateSignedCert generated cert pair which is signed by the self signed CA
+// GenerateSignedCert generated cert pair which is signed by the self signed CA.
 func GenerateSignedCert(cn string, alternateDNS []string, ca Certificate) (Certificate, error) {
 	cert := Certificate{}
 

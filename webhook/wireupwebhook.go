@@ -72,7 +72,7 @@ func WireUpWebhook(clt client.Client, mgr manager.Manager, whk *webhook.Server, 
 }
 
 //assuming we have a service set up for the webhook, and the service is linking
-//to a secret which has the CA
+//to a secret which has the CA.
 func WireUpWebhookSupplymentryResource(mgr manager.Manager, stop <-chan struct{}, wbhSvcName, validatorName, certDir string, caCert []byte) {
 	log.Info("entry wire up webhook")
 	defer log.Info("exit wire up webhook ")

@@ -28,12 +28,12 @@ const (
 	ResourceLabelName = "name"
 )
 
-//DplMap store all dpl names for a cluster [dplName]
+//DplMap store all dpl names for a cluster [dplName].
 type DplMap struct {
 	DplResourceMap map[string]*dplv1alpha1.Deployable
 }
 
-//GetUniqueDeployables get unique deployable array
+//GetUniqueDeployables get unique deployable array.
 func GetUniqueDeployables(allDpls []*dplv1alpha1.Deployable) []*dplv1alpha1.Deployable {
 	dplmap := make(map[string]*dplv1alpha1.Deployable)
 
@@ -50,7 +50,7 @@ func GetUniqueDeployables(allDpls []*dplv1alpha1.Deployable) []*dplv1alpha1.Depl
 	return newdpls
 }
 
-//GetUniqueSubscriptions get unique subscription array
+//GetUniqueSubscriptions get unique subscription array.
 func GetUniqueSubscriptions(allSubs []*subv1alpha1.Subscription) []*subv1alpha1.Subscription {
 	submap := make(map[string]*subv1alpha1.Subscription)
 
@@ -67,7 +67,7 @@ func GetUniqueSubscriptions(allSubs []*subv1alpha1.Subscription) []*subv1alpha1.
 	return newsubs
 }
 
-//PrintAllClusterDplMap print all cluster deployable map
+//PrintAllClusterDplMap print all cluster deployable map.
 func PrintAllClusterDplMap(allClusterDplMap map[string]*DplMap) {
 	for cluster, dplmap := range allClusterDplMap {
 		for dplname, dpl := range dplmap.DplResourceMap {
@@ -86,7 +86,7 @@ func PrintAllClusterDplMap(allClusterDplMap map[string]*DplMap) {
 	}
 }
 
-//AppendClusterDplMap append dpl and its deployed cluster to allClusterDplMap
+//AppendClusterDplMap append dpl and its deployed cluster to allClusterDplMap.
 func AppendClusterDplMap(statusdpl dplv1alpha1.Deployable, dpl dplv1alpha1.Deployable, allClusterDplMap map[string]*DplMap) {
 	if statusdpl.Status.Phase == "Propagated" || statusdpl.Status.Phase == "Deployed" {
 		for cluster := range statusdpl.Status.PropagatedStatus {

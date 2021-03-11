@@ -27,7 +27,7 @@ build:
 lint:
 	@build/run-code-lint.sh
 
-.PHONY: unit-test
+.PHONY: test
 
-unit-test:
+test:
 	@build/run-unit-tests.sh

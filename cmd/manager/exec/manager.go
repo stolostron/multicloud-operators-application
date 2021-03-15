@@ -51,7 +51,6 @@ var (
 
 // RunManager starts the actual manager
 func RunManager() {
-
 	// Get a config to talk to the apiserver
 	cfg, err := config.GetConfig()
 	if err != nil {
@@ -73,8 +72,10 @@ func RunManager() {
 	}
 
 	enableLeaderElection := false
+
 	if _, err := rest.InClusterConfig(); err == nil {
 		klog.Info("LeaderElection enabled as running in a cluster")
+
 		enableLeaderElection = true
 	} else {
 		klog.Info("LeaderElection disabled as not running in a cluster")

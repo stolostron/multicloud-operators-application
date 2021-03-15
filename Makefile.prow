@@ -49,7 +49,7 @@ lint-all: lint-yaml lint-go
 .PHONY: lint-yaml
 
 lint-yaml:
-	@${FINDFILES} \( -name '*.yml' -o -name '*.yaml' \) -print0 | ${XARGS} grep -L -e "{{" | ${CLEANXARGS} yamllint -c ./common/config/.yamllint.yml
+	@${FINDFILES} \( -name '*.yml' -o -name '*.yaml' \) -print0 | ${XARGS} grep -L -e "{{" | ${CLEANXARGS} /go/src/github.com/open-cluster-management/.local/bin/yamllint -c ./common/config/.yamllint.yml
 
 .PHONY: lint-go
 

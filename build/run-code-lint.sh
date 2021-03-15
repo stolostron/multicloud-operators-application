@@ -15,7 +15,10 @@ chmod +x "${HADOLINT_PATH}"/hadolint
 export PATH="${HADOLINT_PATH}":"${PATH}"
 
 # Install yamllint
-pip install --user yamllint
+HOME_BAK="${HOME}"
+export HOME=/go/src/github.com/open-cluster-management
+pip3 install --user yamllint
+export HOME="${HOME_BAK}"
 
 # Install markdown lint
 gem install mdl

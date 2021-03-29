@@ -23,7 +23,7 @@ make
 make build
 kubectl apply -f deploy/crds/standalone
 export POD_NAMESPACE=<pod namespace to wire up webhook>
-./build/_output/bin/multicluster-operators-application --application-crd-file deploy/crds/app.k8s.io_applications.yaml 
+./build/_output/bin/multicluster-operators-application --application-crd-file deploy/crds/app.k8s.io_applications_crd_v1.yaml
 ```
 
 ## Build a local image

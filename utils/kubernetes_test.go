@@ -42,7 +42,7 @@ func TestCheckAndInstallCRD(t *testing.T) {
 	g := gomega.NewGomegaWithT(t)
 
 	// Setup the Manager and Controller.  Wrap the Controller Reconcile function so it writes each request to a
-	// channel when it is finished.
+	// channel when it is finished
 	mgr, err := manager.New(cfg, manager.Options{MetricsBindAddress: "0"})
 	g.Expect(err).NotTo(gomega.HaveOccurred())
 
@@ -55,6 +55,6 @@ func TestCheckAndInstallCRD(t *testing.T) {
 	}()
 
 	//Test:  create testfoo crd
-	err = CheckAndInstallCRD(cfg, "../deploy/crds/app.k8s.io_applications.yaml")
+	err = CheckAndInstallCRD(cfg, "../deploy/crds/app.k8s.io_applications_crd_v1.yaml")
 	g.Expect(err).NotTo(gomega.HaveOccurred())
 }

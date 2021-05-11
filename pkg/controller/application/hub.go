@@ -46,6 +46,10 @@ func (r *ReconcileApplication) doAppHubReconcile(app *appv1beta1.Application) {
 		}
 
 		substr += sub.Namespace + "/" + sub.Name
+
+		// Add app label to subscription
+		sub.Labels["app"] = app.Name
+		r.Update(context.TODO(), sub)
 	}
 
 	for _, dpl := range allDpls {

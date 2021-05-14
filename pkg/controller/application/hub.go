@@ -82,6 +82,7 @@ func (r *ReconcileApplication) updateSubscriptionAppLabel(s []*subv1.Subscriptio
 
 		if oAppLabel == "" || oAppLabel != appName {
 			sub.Labels["app"] = appName
+
 			err := r.Update(context.TODO(), sub)
 			if err != nil {
 				klog.Error("Error returned when updating subscription:", err, "subscription:", sub.GetNamespace()+"/"+sub.GetName())

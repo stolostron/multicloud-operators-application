@@ -17,6 +17,7 @@ package application
 import (
 	"context"
 	"strings"
+	"time"
 
 	appv1beta1 "github.com/kubernetes-sigs/application/pkg/apis/app/v1beta1"
 	"github.com/open-cluster-management/multicloud-operators-application/utils"
@@ -62,6 +63,32 @@ func (r *ReconcileApplication) doAppHubReconcile(app *appv1beta1.Application) {
 
 	app.Annotations["apps.open-cluster-management.io/subscriptions"] = substr
 	app.Annotations["apps.open-cluster-management.io/deployables"] = dplstr
+
+	r.updateSubscriptionAppLabel(allSubs, app.Name)
+}
+
+func (r *ReconcileApplication) updateSubscriptionAppLabel(s []*subv1.Subscription, appName string) {
+	delayed := false
+
+	for _, sub := range s {
+		oAppLabel := sub.Labels["app"]
+
+		// Delay update to let reconcile from create event to process first
+		if oAppLabel == "" && !delayed {
+			time.Sleep(2 * time.Second)
+
+			delayed = true
+		}
+
+		if oAppLabel == "" || oAppLabel != appName {
+			sub.Labels["app"] = appName
+
+			err := r.Update(context.TODO(), sub)
+			if err != nil {
+				klog.Error("Error returned when updating subscription:", err, "subscription:", sub.GetNamespace()+"/"+sub.GetName())
+			}
+		}
+	}
 }
 
 //GetAllSubscriptionDeployablesByApplication get all subscriptions and their deployables.app.ibm.com objects by a application

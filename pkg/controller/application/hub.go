@@ -69,17 +69,23 @@ func (r *ReconcileApplication) doAppHubReconcile(app *appv1beta1.Application) {
 
 func (r *ReconcileApplication) updateSubscriptionAppLabel(s []*subv1.Subscription, appName string) {
 	delayed := false
+
 	for _, sub := range s {
 		oAppLabel := sub.Labels["app"]
+
 		// Delay update to let reconcile from create event to process first
 		if oAppLabel == "" && !delayed {
 			time.Sleep(2 * time.Second)
+
 			delayed = true
 		}
 
 		if oAppLabel == "" || oAppLabel != appName {
 			sub.Labels["app"] = appName
-			r.Update(context.TODO(), sub)
+			err := r.Update(context.TODO(), sub)
+			if err != nil {
+				klog.Error("Error returned when updating subscription:", err, "subscription:", sub.GetNamespace()+"/"+sub.GetName())
+			}
 		}
 	}
 }

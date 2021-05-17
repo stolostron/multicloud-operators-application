@@ -20,4 +20,7 @@ require (
 	sigs.k8s.io/controller-runtime v0.6.3
 )
 
-replace k8s.io/client-go => k8s.io/client-go v0.19.3
+replace (
+	github.com/ulikunitz/xz => github.com/ulikunitz/xz v0.5.10
+	k8s.io/client-go => k8s.io/client-go v0.19.3
+)

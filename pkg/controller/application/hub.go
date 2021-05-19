@@ -64,24 +64,24 @@ func (r *ReconcileApplication) doAppHubReconcile(app *appv1beta1.Application) {
 	app.Annotations["apps.open-cluster-management.io/subscriptions"] = substr
 	app.Annotations["apps.open-cluster-management.io/deployables"] = dplstr
 
-	r.updateSubscriptionAppLabel(allSubs, app.Name)
+	r.updateSubscriptionPartOfLabel(allSubs, app.Name)
 }
 
-func (r *ReconcileApplication) updateSubscriptionAppLabel(s []*subv1.Subscription, appName string) {
+func (r *ReconcileApplication) updateSubscriptionPartOfLabel(s []*subv1.Subscription, appName string) {
 	delayed := false
 
 	for _, sub := range s {
-		oAppLabel := sub.Labels["app"]
+		oPartOfLabel := sub.Labels["app.kubernetes.io/part-of"]
 
 		// Delay update to let reconcile from create event to process first
-		if oAppLabel == "" && !delayed {
+		if oPartOfLabel == "" && !delayed {
 			time.Sleep(2 * time.Second)
 
 			delayed = true
 		}
 
-		if oAppLabel == "" || oAppLabel != appName {
-			sub.Labels["app"] = appName
+		if oPartOfLabel == "" || oPartOfLabel != appName {
+			sub.Labels["app.kubernetes.io/part-of"] = appName
 
 			err := r.Update(context.TODO(), sub)
 			if err != nil {

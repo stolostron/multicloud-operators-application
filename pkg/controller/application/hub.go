@@ -71,6 +71,10 @@ func (r *ReconcileApplication) updateSubscriptionPartOfLabel(s []*subv1.Subscrip
 	delayed := false
 
 	for _, sub := range s {
+		if sub.Labels == nil {
+			sub.Labels = make(map[string]string)
+		}
+
 		oPartOfLabel := sub.Labels["app.kubernetes.io/part-of"]
 
 		// Delay update to let reconcile from create event to process first

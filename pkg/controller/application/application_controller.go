@@ -196,7 +196,7 @@ func (r *ReconcileApplication) Reconcile(request reconcile.Request) (reconcile.R
 	// Fetch the Deployable instance
 	instance := &appv1beta1.Application{}
 	err := r.Get(context.TODO(), request.NamespacedName, instance)
-	klog.Info("Reconciling Application:", request.NamespacedName, " with Get err:", err)
+	klog.Info("PWU Reconciling Application:", request.NamespacedName, " with Get err:", err)
 
 	if err != nil {
 		if errors.IsNotFound(err) {
@@ -214,7 +214,9 @@ func (r *ReconcileApplication) Reconcile(request reconcile.Request) (reconcile.R
 
 	oldInstance := instance.DeepCopy()
 
+	klog.Info("Before doAppHubReconcile")
 	r.doAppHubReconcile(instance)
+	klog.Info("After doAppHubReconcile")
 
 	result := reconcile.Result{}
 

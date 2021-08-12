@@ -36,7 +36,9 @@ func (r *ReconcileApplication) doAppHubReconcile(app *appv1beta1.Application) {
 	// All deployables will be required for searching deployed pods
 	allSubs, allDpls, allClusterDplMap := r.GetAllNewDeployablesByApplication(app)
 
+	klog.Info("Before PrintAllClusterDplMap")
 	utils.PrintAllClusterDplMap(allClusterDplMap)
+	klog.Info("After PrintAllClusterDplMap")
 
 	substr := ""
 	dplstr := ""
@@ -68,6 +70,7 @@ func (r *ReconcileApplication) doAppHubReconcile(app *appv1beta1.Application) {
 }
 
 func (r *ReconcileApplication) updateSubscriptionPartOfLabel(s []*subv1.Subscription, appName string) {
+	klog.Info("Enter updateSubscriptionPartOfLabel:", appName)
 	delayed := false
 
 	for _, sub := range s {
@@ -85,6 +88,8 @@ func (r *ReconcileApplication) updateSubscriptionPartOfLabel(s []*subv1.Subscrip
 		}
 
 		if oPartOfLabel == "" || oPartOfLabel != appName {
+			klog.Info("Update label in updateSubscriptionPartOfLabel")
+
 			sub.Labels["app.kubernetes.io/part-of"] = appName
 
 			err := r.Update(context.TODO(), sub)
@@ -93,6 +98,8 @@ func (r *ReconcileApplication) updateSubscriptionPartOfLabel(s []*subv1.Subscrip
 			}
 		}
 	}
+
+	klog.Info("Exit updateSubscriptionPartOfLabel")
 }
 
 //GetAllSubscriptionDeployablesByApplication get all subscriptions and their deployables.app.ibm.com objects by a application

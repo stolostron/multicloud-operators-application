@@ -8,7 +8,7 @@ require (
 	github.com/onsi/ginkgo v1.16.4
 	github.com/onsi/gomega v1.13.0
 	github.com/open-cluster-management/multicloud-operators-deployable v1.2.4-0-20210816-f9fe854
-	github.com/open-cluster-management/multicloud-operators-subscription v1.2.4-0-20210817-7443bc9
+	github.com/open-cluster-management/multicloud-operators-subscription v1.2.4-0-20210915-3eda062
 	github.com/pkg/errors v0.9.1
 	github.com/spf13/pflag v1.0.5
 	github.com/stretchr/testify v1.7.0

@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/open-cluster-management/multicloud-operators-application/pkg/controller/application"
+	"github.com/stolostron/multicloud-operators-application/pkg/controller/application"
 )
 
 func init() {

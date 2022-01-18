@@ -20,10 +20,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/open-cluster-management/multicloud-operators-application/pkg/apis"
-	"github.com/open-cluster-management/multicloud-operators-application/pkg/controller"
-	"github.com/open-cluster-management/multicloud-operators-application/utils"
-	appWebhook "github.com/open-cluster-management/multicloud-operators-application/webhook"
+	"github.com/stolostron/multicloud-operators-application/pkg/apis"
+	"github.com/stolostron/multicloud-operators-application/pkg/controller"
+	"github.com/stolostron/multicloud-operators-application/utils"
+	appWebhook "github.com/stolostron/multicloud-operators-application/webhook"
 
 	appapis "github.com/kubernetes-sigs/application/pkg/apis"
 

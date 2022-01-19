@@ -46,6 +46,14 @@ else
     $(error "This system's OS $(LOCAL_OS) isn't recognized/supported")
 endif
 
+TEST_TMP :=/tmp
+export KUBEBUILDER_ASSETS ?=$(TEST_TMP)/kubebuilder/bin
+K8S_VERSION ?=1.19.2
+GOHOSTOS ?=$(shell go env GOHOSTOS)
+GOHOSTARCH ?= $(shell go env GOHOSTARCH)
+KB_TOOLS_ARCHIVE_NAME :=kubebuilder-tools-$(K8S_VERSION)-$(GOHOSTOS)-$(GOHOSTARCH).tar.gz
+KB_TOOLS_ARCHIVE_PATH := $(TEST_TMP)/$(KB_TOOLS_ARCHIVE_NAME)
+
 .PHONY: fmt lint test coverage build build-images
 
 # GITHUB_USER containing '@' char must be escaped with '%40'
@@ -100,8 +108,21 @@ lint: lint-all
 # test section
 ############################################################
 
-test:
-	@go test ${TESTARGS} ./...
+.PHONY: ensure-kubebuilder-tools
+
+# download the kubebuilder-tools to get kube-apiserver binaries from it
+ensure-kubebuilder-tools:
+ifeq "" "$(wildcard $(KUBEBUILDER_ASSETS))"
+	$(info Downloading kube-apiserver into '$(KUBEBUILDER_ASSETS)')
+	mkdir -p '$(KUBEBUILDER_ASSETS)'
+	curl -s -f -L https://storage.googleapis.com/kubebuilder-tools/$(KB_TOOLS_ARCHIVE_NAME) -o '$(KB_TOOLS_ARCHIVE_PATH)'
+	tar -C '$(KUBEBUILDER_ASSETS)' --strip-components=2 -zvxf '$(KB_TOOLS_ARCHIVE_PATH)'
+else
+	$(info Using existing kube-apiserver from "$(KUBEBUILDER_ASSETS)")
+endif
+
+test: ensure-kubebuilder-tools
+	go test -timeout 300s -v ./...
 
 ############################################################
 # coverage section

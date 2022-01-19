@@ -38,7 +38,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/envtest/printer"
 
 	appv1beta1 "github.com/kubernetes-sigs/application/pkg/apis/app/v1beta1"
-	"github.com/open-cluster-management/multicloud-operators-application/pkg/apis"
+	"github.com/stolostron/multicloud-operators-application/pkg/apis"
 )
 
 const (

@@ -19,9 +19,9 @@ import (
 	"strings"
 
 	appv1beta1 "github.com/kubernetes-sigs/application/pkg/apis/app/v1beta1"
-	"github.com/open-cluster-management/multicloud-operators-application/utils"
 	dplv1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
 	subv1 "github.com/open-cluster-management/multicloud-operators-subscription/pkg/apis/apps/v1"
+	"github.com/stolostron/multicloud-operators-application/utils"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/klog"

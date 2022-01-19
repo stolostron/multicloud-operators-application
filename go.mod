@@ -1,4 +1,4 @@
-module github.com/open-cluster-management/multicloud-operators-application
+module github.com/stolostron/multicloud-operators-application
 
 go 1.15
 
@@ -20,4 +20,8 @@ require (
 	sigs.k8s.io/controller-runtime v0.6.3
 )
 
-replace k8s.io/client-go => k8s.io/client-go v0.19.3
+replace (
+	github.com/open-cluster-management/multicloud-operators-deployable => github.com/stolostron/multicloud-operators-deployable v1.2.2-2-20201130-7bc3c
+	github.com/open-cluster-management/multicloud-operators-subscription => github.com/stolostron/multicloud-operators-subscription v1.2.2-2-20201130-59f96
+	k8s.io/client-go => k8s.io/client-go v0.19.3
+)

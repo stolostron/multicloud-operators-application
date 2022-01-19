@@ -13,7 +13,7 @@
 ## Launch Dev mode
 
 ```shell
-git clone git@github.com:open-cluster-management/multicloud-operators-application.git
+git clone git@github.com:stolostron/multicloud-operators-application.git
 cd multicloud-operators-application
 export GITHUB_USER=<github_user>
 export GITHUB_TOKEN=<github_token>
@@ -27,7 +27,7 @@ export POD_NAMESPACE=<pod namespace to wire up webhook>
 ## Build a local image
 
 ```shell
-git clone git@github.com:open-cluster-management/multicloud-operators-application.git
+git clone git@github.com:stolostron/multicloud-operators-application.git
 cd multicloud-operators-application
 export GITHUB_USER=<github_user>
 export GITHUB_TOKEN=<github_token>

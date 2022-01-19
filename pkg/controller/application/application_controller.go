@@ -17,9 +17,9 @@ package application
 import (
 	"context"
 
-	"github.com/open-cluster-management/multicloud-operators-application/utils"
 	dplv1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
 	subv1 "github.com/open-cluster-management/multicloud-operators-subscription/pkg/apis/apps/v1"
+	"github.com/stolostron/multicloud-operators-application/utils"
 
 	"strings"
 

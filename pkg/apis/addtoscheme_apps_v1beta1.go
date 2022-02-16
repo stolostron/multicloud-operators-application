@@ -15,9 +15,9 @@
 package apis
 
 import (
-	v1beta1 "github.com/kubernetes-sigs/application/pkg/apis/app/v1beta1"
 	dplv1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
 	subv1 "github.com/open-cluster-management/multicloud-operators-subscription/pkg/apis/apps/v1"
+	v1beta1 "sigs.k8s.io/application/api/v1beta1"
 )
 
 func init() {

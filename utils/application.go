@@ -10,9 +10,9 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/event"
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 
-	appv1beta1 "github.com/kubernetes-sigs/application/pkg/apis/app/v1beta1"
 	dplv1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
 	subv1 "github.com/open-cluster-management/multicloud-operators-subscription/pkg/apis/apps/v1"
+	appv1beta1 "sigs.k8s.io/application/api/v1beta1"
 )
 
 // DeployablePredicateFunc defines predicate function for deployable watch in deployable controller

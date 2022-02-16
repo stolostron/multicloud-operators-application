@@ -25,7 +25,7 @@ import (
 	"github.com/stolostron/multicloud-operators-application/utils"
 	appWebhook "github.com/stolostron/multicloud-operators-application/webhook"
 
-	appapis "github.com/kubernetes-sigs/application/pkg/apis"
+	appapis "sigs.k8s.io/application/api/v1beta1"
 
 	dplapis "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis"
 	dplv1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
@@ -161,7 +161,7 @@ func RunManager() {
 		os.Exit(1)
 	}
 
-	go appWebhook.WireUpWebhookSupplymentryResource(mgr, sig, appWebhook.WebhookServiceName,
+	go appWebhook.WireUpWebhookSupplymentryResource(sig, mgr, appWebhook.WebhookServiceName,
 		appWebhook.WebhookValidatorName, certDir, caCert)
 
 	klog.Info("Starting the Cmd.")

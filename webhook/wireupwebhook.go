@@ -36,7 +36,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	appv1beta1 "github.com/kubernetes-sigs/application/pkg/apis/app/v1beta1"
+	appv1beta1 "sigs.k8s.io/application/api/v1beta1"
 )
 
 const (
@@ -73,7 +73,7 @@ func WireUpWebhook(clt client.Client, mgr manager.Manager, whk *webhook.Server, 
 
 //assuming we have a service set up for the webhook, and the service is linking
 //to a secret which has the CA
-func WireUpWebhookSupplymentryResource(mgr manager.Manager, stop <-chan struct{}, wbhSvcName, validatorName, certDir string, caCert []byte) {
+func WireUpWebhookSupplymentryResource(ctx context.Context, mgr manager.Manager, wbhSvcName, validatorName, certDir string, caCert []byte) {
 	log.Info("entry wire up webhook")
 	defer log.Info("exit wire up webhook ")
 
@@ -82,7 +82,7 @@ func WireUpWebhookSupplymentryResource(mgr manager.Manager, stop <-chan struct{}
 		log.Error(err, "failed to wire up webhook with kube")
 	}
 
-	if !mgr.GetCache().WaitForCacheSync(stop) {
+	if !mgr.GetCache().WaitForCacheSync(ctx) {
 		log.Error(gerr.New("cache not started"), "failed to start up cache")
 	}
 
@@ -235,8 +235,8 @@ func newValidatingWebhookCfg(wbhSvcName, validatorName, namespace, path string, 
 			},
 			Rules: []admissionregistration.RuleWithOperations{{
 				Rule: admissionregistration.Rule{
-					APIGroups:   []string{appv1beta1.SchemeGroupVersion.Group},
-					APIVersions: []string{appv1beta1.SchemeGroupVersion.Version},
+					APIGroups:   []string{appv1beta1.GroupVersion.Group},
+					APIVersions: []string{appv1beta1.GroupVersion.Version},
 					Resources:   []string{resourceName},
 				},
 				Operations: []admissionregistration.OperationType{

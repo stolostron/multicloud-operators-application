@@ -29,7 +29,7 @@ import (
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
-	appv1beta1 "github.com/kubernetes-sigs/application/pkg/apis/app/v1beta1"
+	appv1beta1 "sigs.k8s.io/application/api/v1beta1"
 )
 
 var _ = Describe("test application validation logic", func() {
@@ -69,17 +69,19 @@ var _ = Describe("test application validation logic", func() {
 			testNs  string
 			caCert  []byte
 			err     error
-			sstop   chan struct{}
 		)
 
 		It("should create a service and ValidatingWebhookConfiguration", func() {
 			lMgr, err = mgr.New(testEnv.Config, mgr.Options{MetricsBindAddress: "0"})
 			Expect(err).Should(BeNil())
 
-			sstop = make(chan struct{})
-			defer close(sstop)
+			ctx, cancel := context.WithCancel(context.Background())
+			defer func() {
+				cancel()
+			}()
+
 			go func() {
-				Expect(lMgr.Start(sstop)).Should(Succeed())
+				Expect(lMgr.Start(ctx)).Should(Succeed())
 			}()
 
 			certDir = filepath.Join(os.TempDir(), "k8s-webhook-server", "application-serving-certs")
@@ -90,7 +92,7 @@ var _ = Describe("test application validation logic", func() {
 			Expect(err).Should(BeNil())
 			validatorName := "test-validator"
 			wbhSvcNm := "app-wbh-svc"
-			WireUpWebhookSupplymentryResource(lMgr, stop, wbhSvcNm, validatorName, certDir, caCert)
+			WireUpWebhookSupplymentryResource(stop, lMgr, wbhSvcNm, validatorName, certDir, caCert)
 
 			ns, err := findEnvVariable(podNamespaceEnvVar)
 			Expect(err).Should(BeNil())

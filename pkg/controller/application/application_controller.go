@@ -23,11 +23,11 @@ import (
 
 	"strings"
 
-	appv1beta1 "github.com/kubernetes-sigs/application/pkg/apis/app/v1beta1"
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/klog"
+	appv1beta1 "sigs.k8s.io/application/api/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/controller"
 	"sigs.k8s.io/controller-runtime/pkg/handler"
@@ -57,10 +57,10 @@ type deployableMapper struct {
 	client.Client
 }
 
-func (mapper *deployableMapper) Map(obj handler.MapObject) []reconcile.Request {
+func (mapper *deployableMapper) Map(obj client.Object) []reconcile.Request {
 	//enqueue all applications under these namespaces including the deployable namespace plus all of subscription namespaces related to the deployable
-	dplName := obj.Meta.GetName()
-	dplNamespace := obj.Meta.GetNamespace()
+	dplName := obj.GetName()
+	dplNamespace := obj.GetNamespace()
 	klog.V(1).Info("In deployable Mapper:", dplName, "/", dplNamespace)
 
 	nsmap := make(map[string]bool)
@@ -113,10 +113,10 @@ type subscriptionMapper struct {
 	client.Client
 }
 
-func (mapper *subscriptionMapper) Map(obj handler.MapObject) []reconcile.Request {
+func (mapper *subscriptionMapper) Map(obj client.Object) []reconcile.Request {
 	//enqueue all applications under the subscription namespace
-	subName := obj.Meta.GetName()
-	subNamespace := obj.Meta.GetNamespace()
+	subName := obj.GetName()
+	subNamespace := obj.GetNamespace()
 	klog.V(1).Info("In subscription Mapper:", subName, "/", subNamespace)
 
 	var requests []reconcile.Request
@@ -157,17 +157,23 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	}
 
 	// Watch for changes to Deployable
+	dmapper := &deployableMapper{mgr.GetClient()}
+
 	err = c.Watch(
 		&source.Kind{Type: &dplv1.Deployable{}},
-		&handler.EnqueueRequestsFromMapFunc{ToRequests: &deployableMapper{mgr.GetClient()}}, utils.DeployablePredicateFunc)
+		handler.EnqueueRequestsFromMapFunc(dmapper.Map),
+		utils.DeployablePredicateFunc)
 	if err != nil {
 		return err
 	}
 
 	// Watch for changes to Subscription
+	smapper := &subscriptionMapper{mgr.GetClient()}
+
 	err = c.Watch(
 		&source.Kind{Type: &subv1.Subscription{}},
-		&handler.EnqueueRequestsFromMapFunc{ToRequests: &subscriptionMapper{mgr.GetClient()}}, utils.SubscriptionPredicateFunc)
+		handler.EnqueueRequestsFromMapFunc(smapper.Map),
+		utils.SubscriptionPredicateFunc)
 	if err != nil {
 		return err
 	}
@@ -192,10 +198,10 @@ type ReconcileApplication struct {
 // Note:
 // The Controller will requeue the Request to be processed again if the returned error is non-nil or
 // Result.Requeue is true, otherwise upon completion it will remove the work from the queue.
-func (r *ReconcileApplication) Reconcile(request reconcile.Request) (reconcile.Result, error) {
+func (r *ReconcileApplication) Reconcile(ctx context.Context, request reconcile.Request) (reconcile.Result, error) {
 	// Fetch the Deployable instance
 	instance := &appv1beta1.Application{}
-	err := r.Get(context.TODO(), request.NamespacedName, instance)
+	err := r.Get(ctx, request.NamespacedName, instance)
 	klog.Info("Reconciling Application:", request.NamespacedName, " with Get err:", err)
 
 	if err != nil {
@@ -224,7 +230,7 @@ func (r *ReconcileApplication) Reconcile(request reconcile.Request) (reconcile.R
 		addtionalMsg := "The app annotations updated. App:" + instance.Namespace + "/" + instance.Name
 		r.eventRecorder.RecordEvent(instance, "Update", addtionalMsg, nil)
 
-		err = r.Update(context.TODO(), instance)
+		err = r.Update(ctx, instance)
 		if err != nil {
 			klog.Error("Error returned when updating application :", err, "instance:", instance.GetNamespace()+"/"+instance.GetName())
 			return reconcile.Result{}, err

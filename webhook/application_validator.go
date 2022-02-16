@@ -23,7 +23,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
-	appv1beta1 "github.com/kubernetes-sigs/application/pkg/apis/app/v1beta1"
+	appv1beta1 "sigs.k8s.io/application/api/v1beta1"
 )
 
 type AppValidator struct {

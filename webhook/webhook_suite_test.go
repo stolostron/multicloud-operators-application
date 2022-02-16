@@ -24,7 +24,6 @@ import (
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes/scheme"
 
 	admissionv1 "k8s.io/api/admissionregistration/v1"
@@ -37,8 +36,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
 	"sigs.k8s.io/controller-runtime/pkg/envtest/printer"
 
-	appv1beta1 "github.com/kubernetes-sigs/application/pkg/apis/app/v1beta1"
 	"github.com/stolostron/multicloud-operators-application/pkg/apis"
+	appv1beta1 "sigs.k8s.io/application/api/v1beta1"
 )
 
 const (
@@ -76,6 +75,7 @@ var _ = BeforeSuite(func(done Done) {
 			"PersistentVolumeClaimResize,ResourceQuota",
 		}
 
+		//nolint
 		apiServerFlags := append([]string(nil), envtest.DefaultKubeAPIServerFlags...)
 		apiServerFlags = append(apiServerFlags, customAPIServerFlags...)
 
@@ -132,43 +132,45 @@ func initializeWebhookInEnvironment() {
 	noSideEffectsV1 := admissionv1.SideEffectClassNone
 	webhookPathV1 := ValidatorPath
 
-	testEnv.WebhookInstallOptions = envtest.WebhookInstallOptions{
-		ValidatingWebhooks: []runtime.Object{
-			&admissionv1.ValidatingWebhookConfiguration{
-				ObjectMeta: metav1.ObjectMeta{
-					Name: webhookValidatorName,
-				},
-				TypeMeta: metav1.TypeMeta{
-					Kind:       "ValidatingWebhookConfiguration",
-					APIVersion: "admissionregistration.k8s.io/v1beta1",
-				},
-				Webhooks: []admissionv1.ValidatingWebhook{
+	vwc := []*admissionv1.ValidatingWebhookConfiguration{}
+	vwc = append(vwc, &admissionv1.ValidatingWebhookConfiguration{
+		ObjectMeta: metav1.ObjectMeta{
+			Name: webhookValidatorName,
+		},
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "ValidatingWebhookConfiguration",
+			APIVersion: "admissionregistration.k8s.io/v1beta1",
+		},
+		Webhooks: []admissionv1.ValidatingWebhook{
+			{
+				Name:                    webhookName,
+				AdmissionReviewVersions: []string{"v1beta1"},
+				Rules: []admissionv1.RuleWithOperations{
 					{
-						Name: webhookName,
-						Rules: []admissionv1.RuleWithOperations{
-							{
-								Operations: []admissionv1.OperationType{"CREATE", "UPDATE"},
-								Rule: admissionv1.Rule{
-									APIGroups:   []string{appv1beta1.SchemeGroupVersion.Group},
-									APIVersions: []string{appv1beta1.SchemeGroupVersion.Version},
-									Resources:   []string{resourceName},
-									Scope:       &namespacedScopeV1,
-								},
-							},
+						Operations: []admissionv1.OperationType{"CREATE", "UPDATE"},
+						Rule: admissionv1.Rule{
+							APIGroups:   []string{appv1beta1.GroupVersion.Group},
+							APIVersions: []string{appv1beta1.GroupVersion.Version},
+							Resources:   []string{resourceName},
+							Scope:       &namespacedScopeV1,
 						},
-						FailurePolicy: &failedTypeV1,
-						MatchPolicy:   &equivalentTypeV1,
-						SideEffects:   &noSideEffectsV1,
-						ClientConfig: admissionv1.WebhookClientConfig{
-							Service: &admissionv1.ServiceReference{
-								Name:      "application-validation-service",
-								Namespace: "default",
-								Path:      &webhookPathV1,
-							},
-						},
+					},
+				},
+				FailurePolicy: &failedTypeV1,
+				MatchPolicy:   &equivalentTypeV1,
+				SideEffects:   &noSideEffectsV1,
+				ClientConfig: admissionv1.WebhookClientConfig{
+					Service: &admissionv1.ServiceReference{
+						Name:      "application-validation-service",
+						Namespace: "default",
+						Path:      &webhookPathV1,
 					},
 				},
 			},
 		},
+	})
+
+	testEnv.WebhookInstallOptions = envtest.WebhookInstallOptions{
+		ValidatingWebhooks: vwc,
 	}
 }

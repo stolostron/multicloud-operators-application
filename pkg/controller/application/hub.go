@@ -70,6 +70,8 @@ func (r *ReconcileApplication) doAppHubReconcile(app *appv1beta1.Application) {
 	// Then it is updated to the application name again. so the appsub is updated in a endless loop.
 	// application crd/controller will deprecate in 2.6.
 	// r.updateSubscriptionPartOfLabel(allSubs, app.Name)
+
+	return
 }
 
 func (r *ReconcileApplication) updateSubscriptionPartOfLabel(s []*subv1.Subscription, appName string) {

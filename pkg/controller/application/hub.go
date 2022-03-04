@@ -17,7 +17,6 @@ package application
 import (
 	"context"
 	"strings"
-	"time"
 
 	dplv1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
 	subv1 "github.com/open-cluster-management/multicloud-operators-subscription/pkg/apis/apps/v1"
@@ -63,33 +62,13 @@ func (r *ReconcileApplication) doAppHubReconcile(app *appv1beta1.Application) {
 
 	app.Annotations["apps.open-cluster-management.io/subscriptions"] = substr
 	app.Annotations["apps.open-cluster-management.io/deployables"] = dplstr
-
-	r.updateSubscriptionPartOfLabel(allSubs, app.Name)
 }
 
-func (r *ReconcileApplication) updateSubscriptionPartOfLabel(s []*subv1.Subscription, appName string) {
-	delayed := false
-
-	for _, sub := range s {
-		oPartOfLabel := sub.Labels["app.kubernetes.io/part-of"]
-
-		// Delay update to let reconcile from create event to process first
-		if oPartOfLabel == "" && !delayed {
-			time.Sleep(2 * time.Second)
-
-			delayed = true
-		}
-
-		if oPartOfLabel == "" || oPartOfLabel != appName {
-			sub.Labels["app.kubernetes.io/part-of"] = appName
-
-			err := r.Update(context.TODO(), sub)
-			if err != nil {
-				klog.Error("Error returned when updating subscription:", err, "subscription:", sub.GetNamespace()+"/"+sub.GetName())
-			}
-		}
-	}
-}
+// In 2.5, disable setting the part-of label on all subscriptions of the application.
+// Subscription controller has updated the same label with different vaule.
+// As the result, we see the part-of label is updated to the application name firstly, then it is updated to the subscription name in next cycle.
+// Then it is updated to the application name again. so the appsub is updated in a endless loop.
+// application crd/controller will deprecate in 2.6.
 
 //GetAllSubscriptionDeployablesByApplication get all subscriptions and their deployables.app.ibm.com objects by a application
 func (r *ReconcileApplication) GetAllSubscriptionDeployablesByApplication(app *appv1beta1.Application,

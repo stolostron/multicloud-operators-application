@@ -63,17 +63,13 @@ func (r *ReconcileApplication) doAppHubReconcile(app *appv1beta1.Application) {
 
 	app.Annotations["apps.open-cluster-management.io/subscriptions"] = substr
 	app.Annotations["apps.open-cluster-management.io/deployables"] = dplstr
-
-	// In 2.5, disable setting the part-of label on all subscriptions of the application.
-	// Subscription controller has updated the same label with different vaule.
-	// As the result, we see the part-of label is updated to the application name firstly, then it is updated to the subscription name in next cycle.
-	// Then it is updated to the application name again. so the appsub is updated in a endless loop.
-	// application crd/controller will deprecate in 2.6.
-	// r.updateSubscriptionPartOfLabel(allSubs, app.Name)
-
-	return
 }
 
+// In 2.5, disable setting the part-of label on all subscriptions of the application.
+// Subscription controller has updated the same label with different vaule.
+// As the result, we see the part-of label is updated to the application name firstly, then it is updated to the subscription name in next cycle.
+// Then it is updated to the application name again. so the appsub is updated in a endless loop.
+// application crd/controller will deprecate in 2.6.
 func (r *ReconcileApplication) updateSubscriptionPartOfLabel(s []*subv1.Subscription, appName string) {
 	delayed := false
 

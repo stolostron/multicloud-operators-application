@@ -161,6 +161,12 @@ func createOrUpdateValiatingWebhook(c client.Client, wbhSvcName, validatorName, 
 	validator.Webhooks[0].ClientConfig.Service.Namespace = namespace
 	validator.Webhooks[0].ClientConfig.CABundle = ca
 
+	ignore := admissionregistration.Ignore
+	timeoutSeconds := int32(30)
+
+	validator.Webhooks[0].FailurePolicy = &ignore
+	validator.Webhooks[0].TimeoutSeconds = &timeoutSeconds
+
 	if err := c.Update(context.TODO(), validator); err != nil {
 		return gerr.Wrap(err, fmt.Sprintf("Failed to update validating webhook %s", validatorName))
 	}
@@ -212,8 +218,9 @@ func newWebhookService(wbhSvcName, namespace string) (*corev1.Service, error) {
 }
 
 func newValidatingWebhookCfg(wbhSvcName, validatorName, namespace, path string, ca []byte) *admissionregistration.ValidatingWebhookConfiguration {
-	fail := admissionregistration.Fail
+	ignore := admissionregistration.Ignore
 	side := admissionregistration.SideEffectClassNone
+	timeoutSeconds := int32(30)
 
 	return &admissionregistration.ValidatingWebhookConfiguration{
 		ObjectMeta: metav1.ObjectMeta{
@@ -224,7 +231,8 @@ func newValidatingWebhookCfg(wbhSvcName, validatorName, namespace, path string, 
 			Name:                    webhookName,
 			AdmissionReviewVersions: []string{"v1beta1"},
 			SideEffects:             &side,
-			FailurePolicy:           &fail,
+			FailurePolicy:           &ignore,
+			TimeoutSeconds:          &timeoutSeconds,
 			ClientConfig: admissionregistration.WebhookClientConfig{
 				Service: &admissionregistration.ServiceReference{
 					Name:      wbhSvcName,

@@ -19,7 +19,7 @@
 
 Multicloud Application Selectors <!-- Is this needed? seems like a random line -->
 
-## What is the multicloud-operators-application?
+## What is the multicloud-operators-application? 
 
 The `multicloud-operators-application` is the application wrapper for selecting the involved subscriptions and deployables. In this open community, you can join the discussion, contribute code, and support development. 
 

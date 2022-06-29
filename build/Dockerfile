@@ -4,6 +4,7 @@ RUN microdnf update && \
     microdnf clean all
 
 ENV OPERATOR=/usr/local/bin/multicluster-operators-application \
+    USER_UID=1001 \
     USER_NAME=multicluster-operators-application
 
 # copy applcation CRD
@@ -16,3 +17,5 @@ COPY build/bin /usr/local/bin
 RUN  /usr/local/bin/user_setup
 
 ENTRYPOINT ["/usr/local/bin/entrypoint"]
+
+USER ${USER_UID}

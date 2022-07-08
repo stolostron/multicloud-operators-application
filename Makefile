@@ -46,9 +46,6 @@ else
     $(error "This system's OS $(LOCAL_OS) isn't recognized/supported")
 endif
 
-FINDFILES=find . \( -path ./.git -o -path ./.github \) -prune -o -type f
-XARGS = xargs -0 ${XARGS_FLAGS}
-
 .PHONY: fmt lint test build build-images
 
 # GITHUB_USER containing '@' char must be escaped with '%40'
@@ -68,7 +65,7 @@ endif
 default::
 	@echo "Build Harness Bootstrapped"
 
-# include common/Makefile.common.mk
+include common/Makefile.common.mk
 
 ############################################################
 # work section
@@ -98,15 +95,6 @@ check: lint
 # Default value will run all linters, override these make target with your requirements:
 #    eg: lint: lint-go lint-yaml
 lint: lint-all
-
-.PHONY: lint-all
-
-lint-all: lint-go
-
-.PHONY: lint-go
-
-lint-go:
-	@${FINDFILES} -name '*.go' \( ! \( -name '*.gen.go' -o -name '*.pb.go' \) \) -print0 | ${XARGS} common/scripts/lint_go.sh
 
 ############################################################
 # test section

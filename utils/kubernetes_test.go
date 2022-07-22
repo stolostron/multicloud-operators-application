@@ -38,6 +38,9 @@ func TestConvertLabels(t *testing.T) {
 
 	_, err := ConvertLabels(labelSelector)
 	g.Expect(err).NotTo(gomega.HaveOccurred())
+
+	_, err = ConvertLabels(nil)
+	g.Expect(err).NotTo(gomega.HaveOccurred())
 }
 
 func TestCheckAndInstallCRD(t *testing.T) {

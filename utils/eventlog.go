@@ -16,7 +16,6 @@ package utils
 
 import (
 	"regexp"
-	"runtime"
 
 	corev1 "k8s.io/api/core/v1"
 	apiruntime "k8s.io/apimachinery/pkg/runtime"
@@ -37,26 +36,6 @@ const NoiseLogLel = 5
 const VeryNoisy = 10
 
 var regexStripFnPreamble = regexp.MustCompile(`^.*\.(.*)$`)
-
-// GetFnName - get name of function
-func GetFnName() string {
-	fnName := "<unknown>"
-	// Skip this function, and fetch the PC and file for its parent
-	pc, _, _, ok := runtime.Caller(1)
-	if ok {
-		fnName = regexStripFnPreamble.ReplaceAllString(runtime.FuncForPC(pc).Name(), "$1")
-	}
-
-	return fnName
-}
-
-// EnterFnString - called when enter a function
-func EnterFnString() string {
-	return ""
-}
-
-// ExitFuString - called when exiting a function
-func ExitFuString(s string) {}
 
 // EventRecorder - record kubernetes event
 type EventRecorder struct {

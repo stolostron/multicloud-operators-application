@@ -15,8 +15,6 @@
 package utils
 
 import (
-	"regexp"
-
 	corev1 "k8s.io/api/core/v1"
 	apiruntime "k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/kubernetes"
@@ -34,8 +32,6 @@ const NoiseLogLel = 5
 
 // VeryNoisy = show call stack, routine  and everything
 const VeryNoisy = 10
-
-var regexStripFnPreamble = regexp.MustCompile(`^.*\.(.*)$`)
 
 // EventRecorder - record kubernetes event
 type EventRecorder struct {

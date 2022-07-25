@@ -27,6 +27,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 
 	dplv1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
+	subv1 "github.com/open-cluster-management/multicloud-operators-subscription/pkg/apis/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	appv1beta1 "sigs.k8s.io/application/api/v1beta1"
 )
@@ -99,6 +100,18 @@ func TestReconcile(t *testing.T) {
 		},
 	}
 
+	subscriptionName := "example-subscription"
+	subscriptionKey := types.NamespacedName{
+		Name:      subscriptionName,
+		Namespace: "kube-system",
+	}
+	subInstance := &subv1.Subscription{
+		ObjectMeta: metav1.ObjectMeta{
+			Name:      subscriptionName,
+			Namespace: "kube-system",
+		},
+	}
+
 	c := mgr.GetClient()
 
 	err = c.Create(context.TODO(), deployableInstance)
@@ -107,9 +120,16 @@ func TestReconcile(t *testing.T) {
 	err = c.Create(context.TODO(), instance)
 	g.Expect(err).NotTo(gomega.HaveOccurred())
 
+	err = c.Create(context.TODO(), subInstance)
+	g.Expect(err).NotTo(gomega.HaveOccurred())
+
 	time.Sleep(4 * time.Second)
 
 	instanceResp := &appv1beta1.Application{}
 	err = c.Get(context.TODO(), applicationKey, instanceResp)
+	g.Expect(err).NotTo(gomega.HaveOccurred())
+
+	subscriptionResp := &subv1.Subscription{}
+	err = c.Get(context.TODO(), subscriptionKey, subscriptionResp)
 	g.Expect(err).NotTo(gomega.HaveOccurred())
 }

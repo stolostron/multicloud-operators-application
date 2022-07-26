@@ -30,16 +30,20 @@ var _ = Describe("self-sign cert", func() {
 	It("should generate CA cert and persist to secret", func() {
 		podNs := "test"
 
-		os.Setenv(podNamespaceEnvVar, podNs)
-
 		certDir := "/tmp/tmp-cert"
+
+		os.Setenv(podNamespaceEnvVar, podNs)
 
 		defer func() {
 			os.RemoveAll(certDir)
 			os.Unsetenv(podNamespaceEnvVar)
 		}()
 
-		ca, err := GenerateWebhookCerts(k8sClient, certDir)
+		ca, err := GenerateWebhookCerts(k8sClient, "")
+		Expect(err).Should(Succeed())
+		Expect(ca).ShouldNot(BeNil())
+
+		ca, err = GenerateWebhookCerts(k8sClient, certDir)
 		Expect(err).Should(Succeed())
 		Expect(ca).ShouldNot(BeNil())
 

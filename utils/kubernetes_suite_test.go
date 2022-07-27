@@ -27,6 +27,7 @@ import (
 	"github.com/onsi/gomega"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 
@@ -34,6 +35,7 @@ import (
 )
 
 var cfg *rest.Config
+var c client.Client
 
 func TestMain(m *testing.M) {
 	t := &envtest.Environment{

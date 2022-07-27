@@ -195,22 +195,3 @@ func (r *ReconcileApplication) GetAllNewDeployablesByApplication(
 
 	return newAllSubs, newAllDpls, allClusterDplMap
 }
-
-//GetAllApplications get all applications
-func (r *ReconcileApplication) GetAllApplications() ([]appv1beta1.Application, error) {
-	// find everything with label pointer
-	klog.V(1).Infoln("Entering get all Applications")
-
-	var applist *appv1beta1.ApplicationList
-
-	listOptions := &client.ListOptions{}
-
-	err := r.List(context.TODO(), applist, listOptions)
-	if err != nil {
-		klog.Error("Failed to list all application: ", err)
-	}
-
-	klog.V(1).Infoln("Get all Applications: ", applist.Items, " len: ", len(applist.Items), " error: ", err)
-
-	return applist.Items, nil
-}

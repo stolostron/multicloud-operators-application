@@ -17,8 +17,116 @@ package utils
 import (
 	"testing"
 
+	"github.com/onsi/gomega"
+	dplv1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
+	subv1 "github.com/open-cluster-management/multicloud-operators-subscription/pkg/apis/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/types"
 	appv1beta1 "sigs.k8s.io/application/api/v1beta1"
+	"sigs.k8s.io/controller-runtime/pkg/event"
+)
+
+var (
+	chnkey = types.NamespacedName{
+		Name:      "test-chn",
+		Namespace: "test-chn-namespace",
+	}
+
+	oldSubscription = &subv1.Subscription{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "Subscription",
+			APIVersion: "apps.open-cluster-management.io/v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "subscription1",
+			Labels: map[string]string{
+				"name": "subscription1",
+				"key1": "c1v1",
+				"key2": "c1v2",
+			},
+		},
+		Status: subv1.SubscriptionStatus{
+			LastUpdateTime: metav1.Now(),
+			Reason:         "test",
+			Phase:          "Propagated",
+		},
+		Spec: subv1.SubscriptionSpec{
+			Channel: chnkey.String(),
+			TimeWindow: &subv1.TimeWindow{
+				WindowType: "active",
+				Daysofweek: []string{},
+				Hours: []subv1.HourRange{
+					{Start: "10:00AM", End: "5:00PM"},
+				},
+			},
+		},
+	}
+
+	newSubscription = &subv1.Subscription{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "Subscription",
+			APIVersion: "apps.open-cluster-management.io/v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "subscription1",
+			Labels: map[string]string{
+				"name": "subscription1",
+				"key1": "c1v1",
+				"key2": "c1v3",
+			},
+		},
+		Status: subv1.SubscriptionStatus{
+			LastUpdateTime: metav1.Now(),
+			Reason:         "test",
+			Phase:          "Propagated",
+		},
+		Spec: subv1.SubscriptionSpec{
+			Channel: chnkey.String(),
+			TimeWindow: &subv1.TimeWindow{
+				WindowType: "active",
+				Daysofweek: []string{},
+				Hours: []subv1.HourRange{
+					{Start: "10:00AM", End: "5:00PM"},
+				},
+			},
+		},
+	}
+
+	oldDeployable = &dplv1.Deployable{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "Deployable",
+			APIVersion: "apps.open-cluster-management.io/v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "deployable1",
+			Labels: map[string]string{
+				"name": "deployable1",
+				"key1": "c1v1",
+				"key2": "c1v2",
+			},
+		},
+		Spec: dplv1.DeployableSpec{
+			Channels: []string{"test-1"},
+		},
+	}
+
+	newDeployable = &dplv1.Deployable{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "Deployable",
+			APIVersion: "apps.open-cluster-management.io/v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "deployable1",
+			Labels: map[string]string{
+				"name": "deployable1",
+				"key1": "c1v1",
+				"key2": "c1v2",
+			},
+		},
+		Spec: dplv1.DeployableSpec{
+			Channels: []string{"test-2"},
+		},
+	}
 )
 
 func TestUpdateAppInstance(t *testing.T) {
@@ -72,4 +180,30 @@ func TestUpdateAppInstance(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestPredicate(t *testing.T) {
+	g := gomega.NewGomegaWithT(t)
+
+	// Test SubscriptionPredicateFunc
+	instance := SubscriptionPredicateFunc
+
+	updateEvt := event.UpdateEvent{
+		ObjectOld: oldSubscription,
+		ObjectNew: newSubscription,
+	}
+
+	ret := instance.Update(updateEvt)
+	g.Expect(ret).To(gomega.Equal(true))
+
+	// Test DeployablePredicateFunc
+	instance = DeployablePredicateFunc
+
+	updateEvt = event.UpdateEvent{
+		ObjectOld: oldDeployable,
+		ObjectNew: newDeployable,
+	}
+
+	ret = instance.Update(updateEvt)
+	g.Expect(ret).To(gomega.Equal(true))
 }

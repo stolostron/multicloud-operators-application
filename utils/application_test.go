@@ -21,6 +21,7 @@ import (
 	dplv1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
 	subv1 "github.com/open-cluster-management/multicloud-operators-subscription/pkg/apis/apps/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	appv1beta1 "sigs.k8s.io/application/api/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/event"
@@ -78,7 +79,7 @@ var (
 		Status: subv1.SubscriptionStatus{
 			LastUpdateTime: metav1.Now(),
 			Reason:         "test",
-			Phase:          "Propagated",
+			Phase:          "Failed",
 		},
 		Spec: subv1.SubscriptionSpec{
 			Channel: chnkey.String(),
@@ -86,7 +87,7 @@ var (
 				WindowType: "active",
 				Daysofweek: []string{},
 				Hours: []subv1.HourRange{
-					{Start: "10:00AM", End: "5:00PM"},
+					{Start: "09:00AM", End: "5:00PM"},
 				},
 			},
 		},
@@ -125,6 +126,48 @@ var (
 		},
 		Spec: dplv1.DeployableSpec{
 			Channels: []string{"test-2"},
+			Template: &runtime.RawExtension{
+				Raw: []byte("ad,123"),
+			},
+		},
+	}
+
+	oldDeployable2 = &dplv1.Deployable{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "Deployable",
+			APIVersion: "apps.open-cluster-management.io/v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "deployable1",
+			Labels: map[string]string{
+				"name": "deployable1",
+				"key1": "c1v1",
+				"key2": "c1v2",
+			},
+		},
+		Spec: dplv1.DeployableSpec{
+			Channels: []string{"test-1"},
+		},
+	}
+
+	newDeployable2 = &dplv1.Deployable{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "Deployable",
+			APIVersion: "apps.open-cluster-management.io/v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "deployable1",
+			Labels: map[string]string{
+				"name": "deployable1",
+				"key1": "c1v1",
+				"key2": "c1v2",
+			},
+		},
+		Spec: dplv1.DeployableSpec{
+			Channels: []string{"test-2"},
+			Template: &runtime.RawExtension{
+				Raw: nil,
+			},
 		},
 	}
 )
@@ -202,6 +245,14 @@ func TestPredicate(t *testing.T) {
 	updateEvt = event.UpdateEvent{
 		ObjectOld: oldDeployable,
 		ObjectNew: newDeployable,
+	}
+
+	ret = instance.Update(updateEvt)
+	g.Expect(ret).To(gomega.Equal(true))
+
+	updateEvt = event.UpdateEvent{
+		ObjectOld: oldDeployable2,
+		ObjectNew: newDeployable2,
 	}
 
 	ret = instance.Update(updateEvt)

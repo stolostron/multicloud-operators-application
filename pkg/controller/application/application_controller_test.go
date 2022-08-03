@@ -63,7 +63,7 @@ func TestReconcile(t *testing.T) {
 		mgrStopped.Wait()
 	}()
 
-	deployableName := "example-deployable"
+	deployableName := "example-subscription-deployable"
 	deployableInstance := &dplv1.Deployable{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Deployable",

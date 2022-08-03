@@ -131,6 +131,45 @@ var (
 			},
 		},
 	}
+
+	oldDeployable2 = &dplv1.Deployable{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "Deployable",
+			APIVersion: "apps.open-cluster-management.io/v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "deployable1",
+			Labels: map[string]string{
+				"name": "deployable1",
+				"key1": "c1v1",
+				"key2": "c1v2",
+			},
+		},
+		Spec: dplv1.DeployableSpec{
+			Channels: []string{"test-1"},
+		},
+	}
+
+	newDeployable2 = &dplv1.Deployable{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "Deployable",
+			APIVersion: "apps.open-cluster-management.io/v1",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "deployable1",
+			Labels: map[string]string{
+				"name": "deployable1",
+				"key1": "c1v1",
+				"key2": "c1v2",
+			},
+		},
+		Spec: dplv1.DeployableSpec{
+			Channels: []string{"test-2"},
+			Template: &runtime.RawExtension{
+				Raw: nil,
+			},
+		},
+	}
 )
 
 func TestUpdateAppInstance(t *testing.T) {
@@ -206,6 +245,14 @@ func TestPredicate(t *testing.T) {
 	updateEvt = event.UpdateEvent{
 		ObjectOld: oldDeployable,
 		ObjectNew: newDeployable,
+	}
+
+	ret = instance.Update(updateEvt)
+	g.Expect(ret).To(gomega.Equal(true))
+
+	updateEvt = event.UpdateEvent{
+		ObjectOld: oldDeployable2,
+		ObjectNew: newDeployable2,
 	}
 
 	ret = instance.Update(updateEvt)

@@ -16,8 +16,10 @@ package webhook
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"path/filepath"
+	"testing"
 	"time"
 
 	. "github.com/onsi/ginkgo"
@@ -25,6 +27,8 @@ import (
 	admissionv1 "k8s.io/api/admissionregistration/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
+	ctrl "sigs.k8s.io/controller-runtime"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	mgr "sigs.k8s.io/controller-runtime/pkg/manager"
 
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -93,6 +97,7 @@ var _ = Describe("test application validation logic", func() {
 			validatorName := "test-validator"
 			wbhSvcNm := "app-wbh-svc"
 			WireUpWebhookSupplymentryResource(stop, lMgr, wbhSvcNm, validatorName, certDir, caCert)
+			WireUpWebhookSupplymentryResource(ctx, lMgr, wbhSvcNm, validatorName, certDir, caCert)
 
 			ns, err := findEnvVariable(podNamespaceEnvVar)
 			Expect(err).Should(BeNil())
@@ -115,3 +120,25 @@ var _ = Describe("test application validation logic", func() {
 		})
 	})
 })
+
+func TestWireupWebhook(t *testing.T) {
+	var (
+		metricsHost         = "0.0.0.0"
+		metricsPort         = 8386
+		operatorMetricsPort = 8689
+	)
+
+	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
+		MetricsBindAddress:      fmt.Sprintf("%s:%d", metricsHost, metricsPort),
+		Port:                    operatorMetricsPort,
+		LeaderElection:          false,
+		LeaderElectionID:        "multicloud-operators-application-leader.open-cluster-management.io",
+		LeaderElectionNamespace: "kube-system",
+	})
+	Expect(err).ShouldNot(HaveOccurred())
+	clt, err := client.New(ctrl.GetConfigOrDie(), client.Options{})
+	hookServer := mgr.GetWebhookServer()
+	certDir := filepath.Join(os.TempDir(), "k8s-webhook-server", "application-serving-certs")
+	caCert, err := WireUpWebhook(clt, mgr, hookServer, certDir)
+	Expect(caCert).Should(HaveOccurred())
+}

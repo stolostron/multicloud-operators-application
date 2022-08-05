@@ -18,100 +18,66 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"testing"
 	"time"
 
-	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	admissionv1 "k8s.io/api/admissionregistration/v1"
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/types"
-	mgr "sigs.k8s.io/controller-runtime/pkg/manager"
-
-	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	appv1beta1 "sigs.k8s.io/application/api/v1beta1"
+	"sigs.k8s.io/controller-runtime/pkg/manager"
 )
 
-var _ = Describe("test application validation logic", func() {
-	Context("given an exist namespace appliction in a namespace", func() {
-		var (
-			appkey = types.NamespacedName{Name: "app1", Namespace: "default"}
+func TestWireupWebhook(t *testing.T) {
+	g := NewGomegaWithT(t)
 
-			appIns = appv1beta1.Application{
-				ObjectMeta: metav1.ObjectMeta{
-					Name:      appkey.Name,
-					Namespace: appkey.Namespace},
-				Spec: appv1beta1.ApplicationSpec{
-					Selector: &metav1.LabelSelector{
-						MatchLabels: map[string]string{"app": "nginx-app-details"},
-					},
-				},
-			}
-		)
+	mgr, err := manager.New(cfg, manager.Options{MetricsBindAddress: "0"})
+	g.Expect(err).NotTo(HaveOccurred())
 
-		BeforeEach(func() {
-			// Create the Application object and expect the Reconcile
-			Expect(k8sClient.Create(context.TODO(), appIns.DeepCopy())).NotTo(HaveOccurred())
-		})
+	k8sClient = mgr.GetClient()
 
-		AfterEach(func() {
-			Expect(k8sClient.Delete(context.TODO(), &appIns)).Should(Succeed())
-		})
-	})
+	ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Minute)
+	mgrStopped := StartTestManager(ctx, mgr, g)
 
-	// somehow this test only fail on travis
-	// make sure this one runs at the end, otherwise, we might register this
-	// webhook before the default one, which cause unexpected results.
-	PContext("given a k8s env, it create svc and validating webhook config", func() {
-		var (
-			lMgr    mgr.Manager
-			certDir string
-			testNs  string
-			caCert  []byte
-			err     error
-		)
+	defer func() {
+		cancel()
+		mgrStopped.Wait()
+	}()
 
-		It("should create a service and ValidatingWebhookConfiguration", func() {
-			lMgr, err = mgr.New(testEnv.Config, mgr.Options{MetricsBindAddress: "0"})
-			Expect(err).Should(BeNil())
+	g.Expect(mgr.GetCache().WaitForCacheSync(ctx)).Should(BeTrue())
 
-			ctx, cancel := context.WithCancel(context.Background())
-			defer func() {
-				cancel()
-			}()
+	testNs := "default"
+	os.Setenv("POD_NAMESPACE", testNs)
+	os.Setenv("DEPLOYMENT_LABEL", testNs)
 
-			go func() {
-				Expect(lMgr.Start(ctx)).Should(Succeed())
-			}()
+	validatorName := "test-validator"
+	wbhSvcNm := "app-wbh-svc"
+	certDir := filepath.Join(os.TempDir(), "k8s-webhook-server", "application-serving-certs")
 
-			certDir = filepath.Join(os.TempDir(), "k8s-webhook-server", "application-serving-certs")
-			testNs = "default"
-			os.Setenv("POD_NAMESPACE", testNs)
+	caCert, err := GenerateWebhookCerts(k8sClient, certDir)
+	g.Expect(err).NotTo(HaveOccurred())
 
-			caCert, err = GenerateWebhookCerts(k8sClient, certDir)
-			Expect(err).Should(BeNil())
-			validatorName := "test-validator"
-			wbhSvcNm := "app-wbh-svc"
-			WireUpWebhookSupplymentryResource(stop, lMgr, wbhSvcNm, validatorName, certDir, caCert)
+	WireUpWebhookSupplymentryResource(ctx, mgr, wbhSvcNm, validatorName, certDir, caCert)
 
-			ns, err := findEnvVariable(podNamespaceEnvVar)
-			Expect(err).Should(BeNil())
+	ns, err := findEnvVariable(podNamespaceEnvVar)
+	g.Expect(err).Should(BeNil())
 
-			time.Sleep(3 * time.Second)
-			wbhSvc := &corev1.Service{}
-			svcKey := types.NamespacedName{Name: wbhSvcNm, Namespace: ns}
-			Expect(lMgr.GetClient().Get(context.TODO(), svcKey, wbhSvc)).Should(Succeed())
-			defer func() {
-				Expect(lMgr.GetClient().Delete(context.TODO(), wbhSvc)).Should(Succeed())
-			}()
+	time.Sleep(3 * time.Second)
 
-			wbhCfg := &admissionv1.ValidatingWebhookConfiguration{}
-			cfgKey := types.NamespacedName{Name: validatorName}
-			Expect(lMgr.GetClient().Get(context.TODO(), cfgKey, wbhCfg)).Should(Succeed())
+	wbhSvc := &corev1.Service{}
 
-			defer func() {
-				Expect(lMgr.GetClient().Delete(context.TODO(), wbhCfg)).Should(Succeed())
-			}()
-		})
-	})
-})
+	svcKey := types.NamespacedName{Name: wbhSvcNm, Namespace: ns}
+	g.Expect(mgr.GetClient().Get(context.TODO(), svcKey, wbhSvc)).Should(Succeed())
+
+	defer func() {
+		g.Expect(mgr.GetClient().Delete(context.TODO(), wbhSvc)).Should(Succeed())
+	}()
+
+	wbhCfg := &admissionv1.ValidatingWebhookConfiguration{}
+	cfgKey := types.NamespacedName{Name: validatorName}
+	g.Expect(mgr.GetClient().Get(context.TODO(), cfgKey, wbhCfg)).Should(Succeed())
+
+	defer func() {
+		g.Expect(mgr.GetClient().Delete(context.TODO(), wbhCfg)).Should(Succeed())
+	}()
+}

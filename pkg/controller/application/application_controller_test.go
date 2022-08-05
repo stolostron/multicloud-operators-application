@@ -70,6 +70,12 @@ func TestReconcile(t *testing.T) {
 	}()
 
 	deployableName := "example-subscription-deployable"
+
+	deployableKey := types.NamespacedName{
+		Name:      deployableName,
+		Namespace: applicationNS,
+	}
+
 	deployableInstance := &dplv1.Deployable{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Deployable",
@@ -78,6 +84,9 @@ func TestReconcile(t *testing.T) {
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      deployableName,
 			Namespace: applicationNS,
+			Labels: map[string]string{
+				"app": "nginx-app-details",
+			},
 		},
 		Spec: dplv1.DeployableSpec{
 			Template: &runtime.RawExtension{},
@@ -109,12 +118,15 @@ func TestReconcile(t *testing.T) {
 	subscriptionName := "example-subscription"
 	subscriptionKey := types.NamespacedName{
 		Name:      subscriptionName,
-		Namespace: "kube-system",
+		Namespace: applicationNS,
 	}
 	subInstance := &subv1.Subscription{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:      subscriptionName,
-			Namespace: "kube-system",
+			Namespace: applicationNS,
+			Labels: map[string]string{
+				"app": "nginx-app-details",
+			},
 		},
 		Spec: subv1.SubscriptionSpec{
 			Channel: chnkey.String(),
@@ -126,17 +138,15 @@ func TestReconcile(t *testing.T) {
 	err = c.Create(context.TODO(), deployableInstance)
 	g.Expect(err).NotTo(gomega.HaveOccurred())
 
-	err = c.Create(context.TODO(), instance)
-	g.Expect(err).NotTo(gomega.HaveOccurred())
-
 	err = c.Create(context.TODO(), subInstance)
 	g.Expect(err).NotTo(gomega.HaveOccurred())
 
 	time.Sleep(4 * time.Second)
 
-	instanceResp := &appv1beta1.Application{}
-	err = c.Get(context.TODO(), applicationKey, instanceResp)
+	err = c.Create(context.TODO(), instance)
 	g.Expect(err).NotTo(gomega.HaveOccurred())
+
+	time.Sleep(4 * time.Second)
 
 	subscriptionResp := &subv1.Subscription{}
 	err = c.Get(context.TODO(), subscriptionKey, subscriptionResp)
@@ -149,4 +159,14 @@ func TestReconcile(t *testing.T) {
 	instanceResp1 := &subv1.Subscription{}
 	err = c.Get(context.TODO(), chnkey, instanceResp1)
 	g.Expect(errors.IsNotFound(err)).To(gomega.BeTrue())
+
+	instanceApp := &appv1beta1.Application{}
+	err = c.Get(context.TODO(), applicationKey, instanceApp)
+	g.Expect(err).NotTo(gomega.HaveOccurred())
+
+	klog.Infof("application annotations: %v", instanceApp.Annotations)
+
+	//verify the subscription and deployable are all reported by the application annotation
+	g.Expect(instanceApp.Annotations["apps.open-cluster-management.io/deployables"]).To(gomega.Equal(deployableKey.String()))
+	g.Expect(instanceApp.Annotations["apps.open-cluster-management.io/subscriptions"]).To(gomega.Equal(subscriptionKey.String()))
 }

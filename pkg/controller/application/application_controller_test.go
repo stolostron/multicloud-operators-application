@@ -21,9 +21,11 @@ import (
 	"time"
 
 	"github.com/onsi/gomega"
+	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/klog"
+	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 
 	dplv1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
@@ -34,6 +36,10 @@ import (
 
 var (
 	applicationNS = "kube-system"
+	chnkey        = types.NamespacedName{
+		Name:      "test-chn",
+		Namespace: "test-chn-namespace",
+	}
 )
 
 func TestReconcile(t *testing.T) {
@@ -110,6 +116,9 @@ func TestReconcile(t *testing.T) {
 			Name:      subscriptionName,
 			Namespace: "kube-system",
 		},
+		Spec: subv1.SubscriptionSpec{
+			Channel: chnkey.String(),
+		},
 	}
 
 	c := mgr.GetClient()
@@ -132,4 +141,12 @@ func TestReconcile(t *testing.T) {
 	subscriptionResp := &subv1.Subscription{}
 	err = c.Get(context.TODO(), subscriptionKey, subscriptionResp)
 	g.Expect(err).NotTo(gomega.HaveOccurred())
+
+	slist := &subv1.SubscriptionList{}
+	err = c.List(context.TODO(), slist, &client.ListOptions{})
+	g.Expect(!errors.IsNotFound(err)).To(gomega.BeTrue())
+
+	instanceResp1 := &subv1.Subscription{}
+	err = c.Get(context.TODO(), chnkey, instanceResp1)
+	g.Expect(errors.IsNotFound(err)).To(gomega.BeTrue())
 }

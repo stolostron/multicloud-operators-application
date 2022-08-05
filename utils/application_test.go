@@ -327,12 +327,24 @@ func TestPredicate(t *testing.T) {
 		ObjectOld: oldDeployable,
 		ObjectNew: newDeployable,
 	}
-	newDeployable.Annotations = nil
 
 	ret = instance.Update(updateEvt)
 	g.Expect(ret).To(gomega.Equal(true))
 
+	newDeployable.Annotations = nil
+
+	newDeployable.Labels = map[string]string{"label": "value"}
+	updateEvt = event.UpdateEvent{
+		ObjectOld: oldDeployable,
+		ObjectNew: newDeployable,
+	}
+
+	ret = instance.Update(updateEvt)
+	g.Expect(ret).To(gomega.Equal(true))
+
+	newDeployable.Labels = nil
 	newDeployable.Spec.Template.Raw = nil
+	oldDeployable.Spec.Template.Raw = nil
 	updateEvt = event.UpdateEvent{
 		ObjectOld: oldDeployable,
 		ObjectNew: newDeployable,
@@ -342,6 +354,16 @@ func TestPredicate(t *testing.T) {
 	g.Expect(ret).To(gomega.Equal(true))
 
 	oldDeployable.Spec.Template.Raw = []byte{102, 97, 108, 99, 111, 110}
+	updateEvt = event.UpdateEvent{
+		ObjectOld: oldDeployable,
+		ObjectNew: newDeployable,
+	}
+
+	ret = instance.Update(updateEvt)
+	g.Expect(ret).To(gomega.Equal(true))
+
+	oldDeployable.Spec.Template.Raw = nil
+	newDeployable.Spec.Template.Raw = []byte{102, 97, 108, 99, 111, 110}
 	updateEvt = event.UpdateEvent{
 		ObjectOld: oldDeployable,
 		ObjectNew: newDeployable,

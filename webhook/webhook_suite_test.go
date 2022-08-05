@@ -15,20 +15,25 @@
 package webhook
 
 import (
+	"context"
 	"os"
 	"path/filepath"
+	"sync"
 	"testing"
 	"time"
 
 	. "github.com/onsi/ginkgo"
+	"github.com/onsi/gomega"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes/scheme"
+	"k8s.io/client-go/rest"
 
 	admissionv1 "k8s.io/api/admissionregistration/v1"
 	ctrl "sigs.k8s.io/controller-runtime"
 
+	"sigs.k8s.io/controller-runtime/pkg/manager"
 	mgr "sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
@@ -47,6 +52,7 @@ const (
 var testEnv *envtest.Environment
 var k8sManager mgr.Manager
 var k8sClient client.Client
+var cfg *rest.Config
 
 var (
 	webhookValidatorName = "test-suite-webhook"
@@ -173,4 +179,17 @@ func initializeWebhookInEnvironment() {
 	testEnv.WebhookInstallOptions = envtest.WebhookInstallOptions{
 		ValidatingWebhooks: vwc,
 	}
+}
+
+// StartTestManager adds recFn
+func StartTestManager(ctx context.Context, mgr manager.Manager, g *gomega.GomegaWithT) *sync.WaitGroup {
+	wg := &sync.WaitGroup{}
+	wg.Add(1)
+
+	go func() {
+		defer wg.Done()
+		mgr.Start(ctx)
+	}()
+
+	return wg
 }

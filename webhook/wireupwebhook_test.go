@@ -23,6 +23,7 @@ import (
 	"time"
 
 	. "github.com/onsi/ginkgo"
+	"github.com/onsi/gomega"
 	. "github.com/onsi/gomega"
 	admissionv1 "k8s.io/api/admissionregistration/v1"
 	corev1 "k8s.io/api/core/v1"
@@ -122,6 +123,7 @@ var _ = Describe("test application validation logic", func() {
 })
 
 func TestWireupWebhook(t *testing.T) {
+	g := gomega.NewGomegaWithT(t)
 	var (
 		metricsHost         = "0.0.0.0"
 		metricsPort         = 8386
@@ -135,10 +137,10 @@ func TestWireupWebhook(t *testing.T) {
 		LeaderElectionID:        "multicloud-operators-application-leader.open-cluster-management.io",
 		LeaderElectionNamespace: "kube-system",
 	})
-	Expect(err).ShouldNot(HaveOccurred())
+	g.Expect(err).ShouldNot(HaveOccurred())
 	clt, err := client.New(ctrl.GetConfigOrDie(), client.Options{})
 	hookServer := mgr.GetWebhookServer()
 	certDir := filepath.Join(os.TempDir(), "k8s-webhook-server", "application-serving-certs")
 	caCert, err := WireUpWebhook(clt, mgr, hookServer, certDir)
-	Expect(caCert).Should(HaveOccurred())
+	g.Expect(caCert).Should(HaveOccurred())
 }

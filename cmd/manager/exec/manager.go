@@ -19,6 +19,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	"github.com/stolostron/multicloud-operators-application/pkg/apis"
 	"github.com/stolostron/multicloud-operators-application/pkg/controller"
@@ -81,6 +82,9 @@ func RunManager() {
 		klog.Info("LeaderElection disabled as not running in a cluster")
 	}
 
+	leaseDuration := time.Duration(options.LeaseDurationSeconds) * time.Second
+	renewDeadline := time.Duration(options.RenewDeadlineSeconds) * time.Second
+	retryPeriod := time.Duration(options.RetryPeriodSeconds) * time.Second
 	// Create a new Cmd to provide shared dependencies and start components
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		MetricsBindAddress:      fmt.Sprintf("%s:%d", metricsHost, metricsPort),
@@ -88,6 +92,9 @@ func RunManager() {
 		LeaderElection:          enableLeaderElection,
 		LeaderElectionID:        "multicloud-operators-application-leader.open-cluster-management.io",
 		LeaderElectionNamespace: "kube-system",
+		LeaseDuration:           &leaseDuration,
+		RenewDeadline:           &renewDeadline,
+		RetryPeriod:             &retryPeriod,
 	})
 	if err != nil {
 		klog.Error(err, "")

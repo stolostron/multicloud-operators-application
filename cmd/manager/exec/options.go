@@ -20,14 +20,20 @@ import (
 
 // ControllerRunOptions for the hcm controller.
 type ControllerRunOptions struct {
-	MetricsAddr        string
-	ApplicationCRDFile string
-	LeaderElect        bool
+	MetricsAddr          string
+	ApplicationCRDFile   string
+	LeaderElect          bool
+	LeaseDurationSeconds int
+	RenewDeadlineSeconds int
+	RetryPeriodSeconds   int
 }
 
 var options = ControllerRunOptions{
-	MetricsAddr:        "",
-	ApplicationCRDFile: "/usr/local/etc/application/crds/app.k8s.io_applications_crd_v1.yaml",
+	MetricsAddr:          "",
+	ApplicationCRDFile:   "/usr/local/etc/application/crds/app.k8s.io_applications_crd_v1.yaml",
+	LeaseDurationSeconds: 137,
+	RenewDeadlineSeconds: 107,
+	RetryPeriodSeconds:   26,
 }
 
 // ProcessFlags parses command line parameters into options
@@ -54,5 +60,26 @@ func ProcessFlags() {
 		"leader-elect",
 		false,
 		"Enable a leader client to gain leadership before executing the main loop",
+	)
+
+	flag.IntVar(
+		&options.LeaseDurationSeconds,
+		"lease-duration",
+		options.LeaseDurationSeconds,
+		"The lease duration in seconds.",
+	)
+
+	flag.IntVar(
+		&options.RenewDeadlineSeconds,
+		"renew-deadline",
+		options.RenewDeadlineSeconds,
+		"The renew deadline in seconds.",
+	)
+
+	flag.IntVar(
+		&options.RetryPeriodSeconds,
+		"retry-period",
+		options.RetryPeriodSeconds,
+		"The retry period in seconds.",
 	)
 }

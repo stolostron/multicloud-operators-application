@@ -15,4 +15,5 @@
 # limitations under the License.
 
 export GOLANGCI_LINT_CACHE=/tmp/golangci-cache
+export GOROOT=`go env GOROOT`
 GOGC=25 golangci-lint run -c ./common/config/.golangci.yml

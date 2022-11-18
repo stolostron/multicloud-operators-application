@@ -41,6 +41,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/manager/signals"
+	k8swebhook "sigs.k8s.io/controller-runtime/pkg/webhook"
 )
 
 // Change below variables to serve metrics on different host or port.
@@ -95,6 +96,7 @@ func RunManager() {
 		LeaseDuration:           &leaseDuration,
 		RenewDeadline:           &renewDeadline,
 		RetryPeriod:             &retryPeriod,
+		WebhookServer:           &k8swebhook.Server{TLSMinVersion: "1.2"},
 	})
 	if err != nil {
 		klog.Error(err, "")

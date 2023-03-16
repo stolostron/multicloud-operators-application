@@ -20,6 +20,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"k8s.io/klog"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
@@ -40,8 +41,8 @@ type AppValidator struct {
 //	    values: val-app-1
 
 func (v *AppValidator) Handle(ctx context.Context, req admission.Request) admission.Response {
-	log.Info("entry webhook handle")
-	defer log.Info("exit webhook handle")
+	klog.Info("entry webhook handle")
+	defer klog.Info("exit webhook handle")
 
 	app := &appv1beta1.Application{}
 

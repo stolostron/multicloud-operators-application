@@ -172,7 +172,7 @@ func RunManager() {
 	}
 
 	go appWebhook.WireUpWebhookSupplymentryResource(sig, mgr, appWebhook.WebhookServiceName,
-		appWebhook.WebhookValidatorName, certDir, caCert)
+		appWebhook.WebhookValidatorName, caCert)
 
 	klog.Info("Starting the Cmd.")
 

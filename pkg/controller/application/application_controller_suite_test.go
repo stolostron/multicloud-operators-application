@@ -24,7 +24,6 @@ import (
 	"sync"
 	"testing"
 
-	"github.com/onsi/gomega"
 	"k8s.io/client-go/kubernetes/scheme"
 	"k8s.io/client-go/rest"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
@@ -57,7 +56,7 @@ func TestMain(m *testing.M) {
 }
 
 // StartTestManager adds recFn
-func StartTestManager(ctx context.Context, mgr manager.Manager, g *gomega.GomegaWithT) *sync.WaitGroup {
+func StartTestManager(ctx context.Context, mgr manager.Manager) *sync.WaitGroup {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 

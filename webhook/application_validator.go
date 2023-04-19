@@ -15,7 +15,6 @@
 package webhook
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -39,7 +38,7 @@ type AppValidator struct {
 //	    operator: In
 //	    values: val-app-1
 
-func (v *AppValidator) Handle(ctx context.Context, req admission.Request) admission.Response {
+func (v *AppValidator) Handle(req admission.Request) admission.Response {
 	log.Info("entry webhook handle")
 	defer log.Info("exit webhook handle")
 

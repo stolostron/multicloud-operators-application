@@ -123,7 +123,7 @@ var _ = BeforeSuite(func(done Done) {
 	}
 
 	var err error
-	// be careful, if we use shorthand assignment, the the cCfg will be a local variable
+	// be careful, if we use shorthand assignment, the Cfg will be a local variable
 	initializeWebhookInEnvironment()
 	cfg, err := testEnv.Start()
 	Expect(err).ToNot(HaveOccurred())
@@ -220,7 +220,7 @@ func initializeWebhookInEnvironment() {
 }
 
 // StartTestManager adds recFn
-func StartTestManager(ctx context.Context, mgr mgr.Manager, g *GomegaWithT) *sync.WaitGroup {
+func StartTestManager(ctx context.Context, mgr mgr.Manager) *sync.WaitGroup {
 	wg := &sync.WaitGroup{}
 	wg.Add(1)
 

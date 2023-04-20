@@ -62,7 +62,7 @@ func TestReconcile(t *testing.T) {
 	g.Expect(Add(mgr)).NotTo(gomega.HaveOccurred())
 
 	ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Minute)
-	mgrStopped := StartTestManager(ctx, mgr, g)
+	mgrStopped := StartTestManager(ctx, mgr)
 
 	defer func() {
 		cancel()

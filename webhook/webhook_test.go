@@ -37,7 +37,7 @@ func TestWireupWebhook(t *testing.T) {
 	k8sClient = mgr.GetClient()
 
 	ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Minute)
-	mgrStopped := StartTestManager(ctx, mgr, g)
+	mgrStopped := StartTestManager(ctx, mgr)
 
 	defer func() {
 		cancel()
@@ -57,7 +57,7 @@ func TestWireupWebhook(t *testing.T) {
 	caCert, err := GenerateWebhookCerts(k8sClient, certDir)
 	g.Expect(err).NotTo(HaveOccurred())
 
-	WireUpWebhookSupplymentryResource(ctx, mgr, wbhSvcNm, validatorName, certDir, caCert)
+	WireUpWebhookSupplymentryResource(ctx, mgr, wbhSvcNm, validatorName, caCert)
 
 	ns, err := findEnvVariable(podNamespaceEnvVar)
 	g.Expect(err).Should(BeNil())

@@ -71,9 +71,9 @@ func WireUpWebhook(clt client.Client, mgr manager.Manager, whk *webhook.Server, 
 	return GenerateWebhookCerts(clt, certDir)
 }
 
-//assuming we have a service set up for the webhook, and the service is linking
-//to a secret which has the CA
-func WireUpWebhookSupplymentryResource(ctx context.Context, mgr manager.Manager, wbhSvcName, validatorName, certDir string, caCert []byte) {
+// assuming we have a service set up for the webhook, and the service is linking
+// to a secret which has the CA
+func WireUpWebhookSupplymentryResource(ctx context.Context, mgr manager.Manager, wbhSvcName, validatorName string, caCert []byte) {
 	log.Info("entry wire up webhook")
 	defer log.Info("exit wire up webhook ")
 

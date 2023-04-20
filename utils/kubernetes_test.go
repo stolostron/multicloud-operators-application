@@ -53,7 +53,7 @@ func TestCheckAndInstallCRD(t *testing.T) {
 
 	//start manager mgr
 	ctx, cancel := context.WithTimeout(context.TODO(), 5*time.Minute)
-	mgrStopped := StartTestManager(ctx, mgr, g)
+	mgrStopped := StartTestManager(ctx, mgr)
 
 	defer func() {
 		cancel()

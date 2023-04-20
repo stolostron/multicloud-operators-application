@@ -70,7 +70,7 @@ func (r *ReconcileApplication) doAppHubReconcile(app *appv1beta1.Application) {
 // Then it is updated to the application name again. so the appsub is updated in a endless loop.
 // application crd/controller will deprecate in 2.6.
 
-//GetAllSubscriptionDeployablesByApplication get all subscriptions and their deployables.app.ibm.com objects by a application
+// GetAllSubscriptionDeployablesByApplication get all subscriptions and their deployables.app.ibm.com objects by a application
 func (r *ReconcileApplication) GetAllSubscriptionDeployablesByApplication(app *appv1beta1.Application,
 	allClusterDplMap map[string]*utils.DplMap) ([]*subv1.Subscription, error) {
 	var allSubs []*subv1.Subscription
@@ -146,7 +146,7 @@ func (r *ReconcileApplication) GetAllSubscriptionDeployablesByApplication(app *a
 	return allSubs, nil
 }
 
-//GetAllNewDeployablesByApplication get all deployables.app.ibm.com objects by a application
+// GetAllNewDeployablesByApplication get all deployables.app.ibm.com objects by a application
 func (r *ReconcileApplication) GetAllNewDeployablesByApplication(
 	app *appv1beta1.Application) ([]*subv1.Subscription, []*dplv1.Deployable, map[string]*utils.DplMap) {
 	var allSubs []*subv1.Subscription

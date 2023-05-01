@@ -25,6 +25,7 @@ import (
 
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/klog"
 
 	admissionregistration "k8s.io/api/admissionregistration/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -32,7 +33,6 @@ import (
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"sigs.k8s.io/controller-runtime/pkg/client"
-	logf "sigs.k8s.io/controller-runtime/pkg/log"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
@@ -59,13 +59,11 @@ const (
 	resourceName = "applications"
 )
 
-var log = logf.Log.WithName("operator-application-webhook")
-
 func WireUpWebhook(clt client.Client, mgr manager.Manager, whk *webhook.Server, certDir string) ([]byte, error) {
 	whk.Port = WebhookPort
 	whk.CertDir = certDir
 
-	log.Info("registering webhooks to the webhook server")
+	klog.Info("registering webhooks to the webhook server")
 	whk.Register(ValidatorPath, &webhook.Admission{Handler: &AppValidator{Client: mgr.GetClient()}})
 
 	return GenerateWebhookCerts(clt, certDir)
@@ -74,29 +72,29 @@ func WireUpWebhook(clt client.Client, mgr manager.Manager, whk *webhook.Server, 
 // assuming we have a service set up for the webhook, and the service is linking
 // to a secret which has the CA
 func WireUpWebhookSupplymentryResource(ctx context.Context, mgr manager.Manager, wbhSvcName, validatorName string, caCert []byte) {
-	log.Info("entry wire up webhook")
-	defer log.Info("exit wire up webhook ")
+	klog.Info("entry wire up webhook")
+	defer klog.Info("exit wire up webhook ")
 
 	podNs, err := findEnvVariable(podNamespaceEnvVar)
 	if err != nil {
-		log.Error(err, "failed to wire up webhook with kube")
+		klog.Error(err, "failed to wire up webhook with kube")
 	}
 
 	if !mgr.GetCache().WaitForCacheSync(ctx) {
-		log.Error(gerr.New("cache not started"), "failed to start up cache")
+		klog.Error(gerr.New("cache not started"), "failed to start up cache")
 	}
 
-	log.Info("cache is ready to consume")
+	klog.Info("cache is ready to consume")
 
 	clt := mgr.GetClient()
 
 	if err := createWebhookService(clt, wbhSvcName, podNs); err != nil {
-		log.Error(err, "failed to wire up webhook with kube")
+		klog.Error(err, "failed to wire up webhook with kube")
 		os.Exit(1)
 	}
 
 	if err := createOrUpdateValiatingWebhook(clt, wbhSvcName, validatorName, podNs, ValidatorPath, caCert); err != nil {
-		log.Error(err, "failed to wire up webhook with kube")
+		klog.Error(err, "failed to wire up webhook with kube")
 		os.Exit(1)
 	}
 }
@@ -127,13 +125,13 @@ func createWebhookService(c client.Client, wbhSvcName, namespace string) error {
 				return err
 			}
 
-			log.Info(fmt.Sprintf("Create %s/%s service", namespace, wbhSvcName))
+			klog.Info(fmt.Sprintf("Create %s/%s service", namespace, wbhSvcName))
 
 			return nil
 		}
 	}
 
-	log.Info(fmt.Sprintf("%s/%s service is found", namespace, wbhSvcName))
+	klog.Info(fmt.Sprintf("%s/%s service is found", namespace, wbhSvcName))
 
 	return nil
 }
@@ -152,7 +150,7 @@ func createOrUpdateValiatingWebhook(c client.Client, wbhSvcName, validatorName, 
 				return gerr.Wrap(err, fmt.Sprintf("Failed to create validating webhook %s", validatorName))
 			}
 
-			log.Info(fmt.Sprintf("Create validating webhook %s", validatorName))
+			klog.Info(fmt.Sprintf("Create validating webhook %s", validatorName))
 
 			return nil
 		}
@@ -171,7 +169,7 @@ func createOrUpdateValiatingWebhook(c client.Client, wbhSvcName, validatorName, 
 		return gerr.Wrap(err, fmt.Sprintf("Failed to update validating webhook %s", validatorName))
 	}
 
-	log.Info(fmt.Sprintf("Update validating webhook %s", validatorName))
+	klog.Info(fmt.Sprintf("Update validating webhook %s", validatorName))
 
 	return nil
 }
@@ -186,7 +184,7 @@ func setOwnerReferences(c client.Client, namespace string, obj metav1.Object) {
 	owner := &appsv1.Deployment{}
 
 	if err := c.Get(context.TODO(), key, owner); err != nil {
-		log.Error(err, fmt.Sprintf("Failed to set owner references for %s", obj.GetName()))
+		klog.Error(err, fmt.Sprintf("Failed to set owner references for %s", obj.GetName()))
 		return
 	}
 

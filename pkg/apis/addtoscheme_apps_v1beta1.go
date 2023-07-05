@@ -20,6 +20,11 @@ import (
 	v1beta1 "sigs.k8s.io/application/api/v1beta1"
 )
 
+const (
+	// TLS minimum version as a string
+	TLSMinVersionString = "1.2"
+)
+
 func init() {
 	// Register the types with the Scheme so the components can map objects to GroupVersionKinds and back
 	AddToSchemes = append(AddToSchemes, v1beta1.SchemeBuilder.AddToScheme, dplv1.SchemeBuilder.AddToScheme, subv1.SchemeBuilder.AddToScheme)

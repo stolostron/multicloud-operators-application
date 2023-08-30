@@ -27,11 +27,10 @@ import (
 
 	appapis "sigs.k8s.io/application/api/v1beta1"
 
-	dplapis "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis"
-	dplv1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
+	dplv1 "github.com/stolostron/multicloud-operators-application/pkg/apis/deployable/v1"
 
-	subapis "github.com/open-cluster-management/multicloud-operators-subscription/pkg/apis"
-	subv1 "github.com/open-cluster-management/multicloud-operators-subscription/pkg/apis/apps/v1"
+	subapis "open-cluster-management.io/multicloud-operators-subscription/pkg/apis"
+	subv1 "open-cluster-management.io/multicloud-operators-subscription/pkg/apis/apps/v1"
 
 	"k8s.io/apimachinery/pkg/api/errors"
 	"k8s.io/client-go/rest"
@@ -87,6 +86,8 @@ func RunManager() {
 		"renewDeadline", options.LeaderElectionRenewDeadline,
 		"retryPeriod", options.LeaderElectionRetryPeriod)
 
+	certDir := filepath.Join(os.TempDir(), "k8s-webhook-server", "application-serving-certs")
+
 	// Create a new Cmd to provide shared dependencies and start components
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		MetricsBindAddress:      fmt.Sprintf("%s:%d", metricsHost, metricsPort),
@@ -97,8 +98,9 @@ func RunManager() {
 		LeaseDuration:           &options.LeaderElectionLeaseDuration,
 		RenewDeadline:           &options.LeaderElectionRenewDeadline,
 		RetryPeriod:             &options.LeaderElectionRetryPeriod,
-		WebhookServer:           &k8swebhook.Server{TLSMinVersion: apis.TLSMinVersionString},
+		WebhookServer:           k8swebhook.NewServer(k8swebhook.Options{TLSMinVersion: apis.TLSMinVersionString, Port: appWebhook.WebhookPort, CertDir: certDir}),
 	})
+
 	if err != nil {
 		klog.Error(err, "")
 		os.Exit(1)
@@ -112,12 +114,7 @@ func RunManager() {
 		os.Exit(1)
 	}
 
-	//append deployables.apps.open-cluster-management.io and subscriptions.apps.open-cluster-management to scheme
-	if err = dplapis.AddToScheme(mgr.GetScheme()); err != nil {
-		klog.Error("unable add deployables.apps.open-cluster-management.io APIs to scheme: ", err)
-		os.Exit(1)
-	}
-
+	//append subscriptions.apps.open-cluster-management to scheme
 	if err = subapis.AddToScheme(mgr.GetScheme()); err != nil {
 		klog.Error("unable add subscriptions.apps.open-cluster-management.io APIs to scheme: ", err)
 		os.Exit(1)
@@ -163,7 +160,6 @@ func RunManager() {
 	}
 
 	hookServer := mgr.GetWebhookServer()
-	certDir := filepath.Join(os.TempDir(), "k8s-webhook-server", "application-serving-certs")
 
 	caCert, err := appWebhook.WireUpWebhook(clt, mgr, hookServer, certDir)
 	if err != nil {

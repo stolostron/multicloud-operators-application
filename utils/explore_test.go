@@ -17,12 +17,12 @@ package utils
 import (
 	"testing"
 
-	deployablev1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
-	subv1 "github.com/open-cluster-management/multicloud-operators-subscription/pkg/apis/apps/v1"
+	deployablev1 "github.com/stolostron/multicloud-operators-application/pkg/apis/deployable/v1"
 	"github.com/stretchr/testify/assert"
 	corev1 "k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	subv1 "open-cluster-management.io/multicloud-operators-subscription/pkg/apis/apps/v1"
 )
 
 var (

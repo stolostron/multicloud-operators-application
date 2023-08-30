@@ -59,10 +59,7 @@ const (
 	resourceName = "applications"
 )
 
-func WireUpWebhook(clt client.Client, mgr manager.Manager, whk *webhook.Server, certDir string) ([]byte, error) {
-	whk.Port = WebhookPort
-	whk.CertDir = certDir
-
+func WireUpWebhook(clt client.Client, mgr manager.Manager, whk webhook.Server, certDir string) ([]byte, error) {
 	klog.Info("registering webhooks to the webhook server")
 	whk.Register(ValidatorPath, &webhook.Admission{Handler: &AppValidator{Client: mgr.GetClient()}})
 

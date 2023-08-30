@@ -22,7 +22,7 @@ import (
 	"testing"
 	"time"
 
-	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"github.com/onsi/gomega/gexec"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -38,7 +38,6 @@ import (
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
-	"sigs.k8s.io/controller-runtime/pkg/envtest/printer"
 
 	"github.com/stolostron/multicloud-operators-application/pkg/apis"
 	appv1beta1 "sigs.k8s.io/application/api/v1beta1"
@@ -92,10 +91,7 @@ func TestMain(m *testing.M) {
 
 func TestApplicationWebhook(t *testing.T) {
 	RegisterFailHandler(Fail)
-
-	RunSpecsWithDefaultAndCustomReporters(t,
-		"Application webhook",
-		[]Reporter{printer.NewlineReporter{}})
+	RunSpecs(t, "Application webhook E2E suite")
 }
 
 var _ = BeforeSuite(func(done Done) {
@@ -161,7 +157,7 @@ var _ = BeforeSuite(func(done Done) {
 	}()
 
 	close(done)
-}, StartTimeout)
+})
 
 var _ = AfterSuite(func() {
 	By("tearing down the test environment")

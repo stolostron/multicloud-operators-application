@@ -12,20 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package apis
-
-import (
-	dplv1 "github.com/stolostron/multicloud-operators-application/pkg/apis/deployable/v1"
-	subv1 "open-cluster-management.io/multicloud-operators-subscription/pkg/apis/apps/v1"
-	v1beta1 "sigs.k8s.io/application/api/v1beta1"
-)
-
-const (
-	// TLS minimum version as a string
-	TLSMinVersionString = "1.2"
-)
-
-func init() {
-	// Register the types with the Scheme so the components can map objects to GroupVersionKinds and back
-	AddToSchemes = append(AddToSchemes, v1beta1.SchemeBuilder.AddToScheme, dplv1.SchemeBuilder.AddToScheme, subv1.SchemeBuilder.AddToScheme)
-}
+// Package v1 contains API Schema definitions for the apps v1 API group
+// +k8s:deepcopy-gen=package,register
+// +groupName=apps.open-cluster-management.io
+package v1

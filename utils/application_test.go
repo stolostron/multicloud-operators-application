@@ -18,11 +18,11 @@ import (
 	"testing"
 
 	"github.com/onsi/gomega"
-	dplv1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
-	subv1 "github.com/open-cluster-management/multicloud-operators-subscription/pkg/apis/apps/v1"
+	dplv1 "github.com/stolostron/multicloud-operators-application/pkg/apis/deployable/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"
+	subv1 "open-cluster-management.io/multicloud-operators-subscription/pkg/apis/apps/v1"
 	appv1beta1 "sigs.k8s.io/application/api/v1beta1"
 	"sigs.k8s.io/controller-runtime/pkg/event"
 )

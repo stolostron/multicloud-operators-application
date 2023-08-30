@@ -17,9 +17,9 @@ package application
 import (
 	"context"
 
-	dplv1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
-	subv1 "github.com/open-cluster-management/multicloud-operators-subscription/pkg/apis/apps/v1"
+	dplv1 "github.com/stolostron/multicloud-operators-application/pkg/apis/deployable/v1"
 	"github.com/stolostron/multicloud-operators-application/utils"
+	subv1 "open-cluster-management.io/multicloud-operators-subscription/pkg/apis/apps/v1"
 
 	"strings"
 
@@ -57,7 +57,7 @@ type deployableMapper struct {
 	client.Client
 }
 
-func (mapper *deployableMapper) Map(obj client.Object) []reconcile.Request {
+func (mapper *deployableMapper) Map(ctx context.Context, obj client.Object) []reconcile.Request {
 	//enqueue all applications under these namespaces including the deployable namespace plus all of subscription namespaces related to the deployable
 	dplName := obj.GetName()
 	dplNamespace := obj.GetNamespace()
@@ -113,7 +113,7 @@ type subscriptionMapper struct {
 	client.Client
 }
 
-func (mapper *subscriptionMapper) Map(obj client.Object) []reconcile.Request {
+func (mapper *subscriptionMapper) Map(ctx context.Context, obj client.Object) []reconcile.Request {
 	//enqueue all applications under the subscription namespace
 	subName := obj.GetName()
 	subNamespace := obj.GetNamespace()
@@ -151,7 +151,7 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	}
 
 	// Watch for changes to primary resource Application
-	err = c.Watch(&source.Kind{Type: &appv1beta1.Application{}}, &handler.EnqueueRequestForObject{})
+	err = c.Watch(source.Kind(mgr.GetCache(), &appv1beta1.Application{}), &handler.EnqueueRequestForObject{})
 	if err != nil {
 		return err
 	}
@@ -160,7 +160,7 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	dmapper := &deployableMapper{mgr.GetClient()}
 
 	err = c.Watch(
-		&source.Kind{Type: &dplv1.Deployable{}},
+		source.Kind(mgr.GetCache(), &dplv1.Deployable{}),
 		handler.EnqueueRequestsFromMapFunc(dmapper.Map),
 		utils.DeployablePredicateFunc)
 	if err != nil {
@@ -171,7 +171,7 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	smapper := &subscriptionMapper{mgr.GetClient()}
 
 	err = c.Watch(
-		&source.Kind{Type: &subv1.Subscription{}},
+		source.Kind(mgr.GetCache(), &subv1.Subscription{}),
 		handler.EnqueueRequestsFromMapFunc(smapper.Map),
 		utils.SubscriptionPredicateFunc)
 	if err != nil {

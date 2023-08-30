@@ -17,11 +17,11 @@ package utils
 import (
 	"encoding/json"
 
-	dplv1alpha1 "github.com/open-cluster-management/multicloud-operators-deployable/pkg/apis/apps/v1"
-	subv1alpha1 "github.com/open-cluster-management/multicloud-operators-subscription/pkg/apis/apps/v1"
+	dplv1alpha1 "github.com/stolostron/multicloud-operators-application/pkg/apis/deployable/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/types"
 	"k8s.io/klog"
+	subv1alpha1 "open-cluster-management.io/multicloud-operators-subscription/pkg/apis/apps/v1"
 )
 
 const (

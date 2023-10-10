@@ -1,0 +1,27 @@
+FROM brew.registry.redhat.io/rh-osbs/openshift-golang-builder:rhel_8_1.20 AS builder
+
+WORKDIR /go/src/github.com/stolostron/multicluster-operators-application
+COPY . .
+RUN make -f Makefile.prow build
+
+FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
+
+RUN microdnf update && \
+    microdnf clean all
+
+ENV OPERATOR=/usr/local/bin/multicluster-operators-application \
+    USER_UID=1001 \
+    USER_NAME=multicluster-operators-application
+
+# copy applcation CRD
+COPY --from=builder /go/src/github.com/stolostron/multicluster-operators-application/deploy/crds/*.yaml  /usr/local/etc/application/crds/
+
+# install operator binary
+COPY --from=builder /go/src/github.com/stolostron/multicluster-operators-application/build/_output/bin/multicluster-operators-application ${OPERATOR}
+
+COPY build/bin /usr/local/bin
+RUN  /usr/local/bin/user_setup
+
+ENTRYPOINT ["/usr/local/bin/entrypoint"]
+
+USER ${USER_UID}

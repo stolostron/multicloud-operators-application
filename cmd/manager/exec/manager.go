@@ -38,6 +38,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
+	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	"sigs.k8s.io/controller-runtime/pkg/manager/signals"
 	k8swebhook "sigs.k8s.io/controller-runtime/pkg/webhook"
 )
@@ -51,6 +52,8 @@ var (
 
 // RunManager starts the actual manager
 func RunManager() {
+	ctrl.SetLogger(zap.New(zap.UseDevMode(true)))
+
 	// Get a config to talk to the apiserver
 	cfg, err := config.GetConfig()
 	if err != nil {

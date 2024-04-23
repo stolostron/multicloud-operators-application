@@ -16,6 +16,7 @@ package exec
 
 import (
 	"context"
+	"crypto/tls"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -40,14 +41,14 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client/config"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	"sigs.k8s.io/controller-runtime/pkg/manager/signals"
+	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	k8swebhook "sigs.k8s.io/controller-runtime/pkg/webhook"
 )
 
 // Change below variables to serve metrics on different host or port.
 var (
-	metricsHost         = "0.0.0.0"
-	metricsPort         = 8386
-	operatorMetricsPort = 8689
+	metricsHost = "0.0.0.0"
+	metricsPort = 8386
 )
 
 // RunManager starts the actual manager
@@ -91,17 +92,24 @@ func RunManager() {
 
 	certDir := filepath.Join(os.TempDir(), "k8s-webhook-server", "application-serving-certs")
 
+	webhookOption := k8swebhook.Options{CertDir: certDir}
+	webhookOption.TLSOpts = append(webhookOption.TLSOpts, func(config *tls.Config) {
+		config.MinVersion = apis.TLSMinVersionInt
+	})
+	webhookServer := k8swebhook.NewServer(webhookOption)
+
 	// Create a new Cmd to provide shared dependencies and start components
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
-		MetricsBindAddress:      fmt.Sprintf("%s:%d", metricsHost, metricsPort),
-		Port:                    operatorMetricsPort,
+		Metrics: metricsserver.Options{
+			BindAddress: fmt.Sprintf("%s:%d", metricsHost, metricsPort),
+		},
 		LeaderElection:          enableLeaderElection,
 		LeaderElectionID:        "multicloud-operators-application-leader.open-cluster-management.io",
 		LeaderElectionNamespace: "kube-system",
 		LeaseDuration:           &options.LeaderElectionLeaseDuration,
 		RenewDeadline:           &options.LeaderElectionRenewDeadline,
 		RetryPeriod:             &options.LeaderElectionRetryPeriod,
-		WebhookServer:           k8swebhook.NewServer(k8swebhook.Options{TLSMinVersion: apis.TLSMinVersionString, Port: appWebhook.WebhookPort, CertDir: certDir}),
+		WebhookServer:           webhookServer,
 	})
 
 	if err != nil {

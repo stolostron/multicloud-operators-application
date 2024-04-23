@@ -15,12 +15,16 @@
 package apis
 
 import (
+	"crypto/tls"
+
 	dplv1 "github.com/stolostron/multicloud-operators-application/pkg/apis/deployable/v1"
 	subv1 "open-cluster-management.io/multicloud-operators-subscription/pkg/apis/apps/v1"
 	v1beta1 "sigs.k8s.io/application/api/v1beta1"
 )
 
 const (
+	// TLS minimum version as integer
+	TLSMinVersionInt = tls.VersionTLS12
 	// TLS minimum version as a string
 	TLSMinVersionString = "1.2"
 )

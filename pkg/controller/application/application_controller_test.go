@@ -32,6 +32,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	subv1 "open-cluster-management.io/multicloud-operators-subscription/pkg/apis/apps/v1"
 	appv1beta1 "sigs.k8s.io/application/api/v1beta1"
+	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 )
 
 var (
@@ -53,9 +54,11 @@ func TestReconcile(t *testing.T) {
 	t.Log("Create manager")
 
 	mgr, err := manager.New(cfg, manager.Options{
-		MetricsBindAddress: "0",
-		LeaderElection:     false,
+		Metrics: metricsserver.Options{
+			BindAddress: "0",
+		},
 	})
+
 	g.Expect(err).NotTo(gomega.HaveOccurred())
 
 	t.Log("Setup test reconcile")

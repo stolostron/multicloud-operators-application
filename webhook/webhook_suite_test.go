@@ -35,12 +35,14 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 
 	mgr "sigs.k8s.io/controller-runtime/pkg/manager"
+	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/envtest"
 
 	"github.com/stolostron/multicloud-operators-application/pkg/apis"
 	appv1beta1 "sigs.k8s.io/application/api/v1beta1"
+	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 )
 
 const (
@@ -103,18 +105,8 @@ var _ = BeforeSuite(func(done Done) {
 			UseExistingCluster: &t,
 		}
 	} else {
-		customAPIServerFlags := []string{"--disable-admission-plugins=NamespaceLifecycle,LimitRanger,ServiceAccount," +
-			"TaintNodesByCondition,Priority,DefaultTolerationSeconds,DefaultStorageClass,StorageObjectInUseProtection," +
-			"PersistentVolumeClaimResize,ResourceQuota",
-		}
-
-		//nolint
-		apiServerFlags := append([]string(nil), envtest.DefaultKubeAPIServerFlags...)
-		apiServerFlags = append(apiServerFlags, customAPIServerFlags...)
-
 		testEnv = &envtest.Environment{
-			CRDDirectoryPaths:  []string{filepath.Join("..", "..", "deploy", "crds")},
-			KubeAPIServerFlags: apiServerFlags,
+			CRDDirectoryPaths: []string{filepath.Join("..", "..", "deploy", "crds")},
 		}
 	}
 
@@ -128,11 +120,18 @@ var _ = BeforeSuite(func(done Done) {
 	err = apis.AddToScheme(scheme.Scheme)
 	Expect(err).NotTo(HaveOccurred())
 
+	webhookOption := webhook.Options{
+		Host:    testEnv.WebhookInstallOptions.LocalServingHost,
+		Port:    testEnv.WebhookInstallOptions.LocalServingPort,
+		CertDir: testEnv.WebhookInstallOptions.LocalServingCertDir,
+	}
+	webhookServer := webhook.NewServer(webhookOption)
+
 	k8sManager, err = mgr.New(cfg, mgr.Options{
-		MetricsBindAddress: "0",
-		Port:               testEnv.WebhookInstallOptions.LocalServingPort,
-		Host:               testEnv.WebhookInstallOptions.LocalServingHost,
-		CertDir:            testEnv.WebhookInstallOptions.LocalServingCertDir,
+		Metrics: metricsserver.Options{
+			BindAddress: "0",
+		},
+		WebhookServer: webhookServer,
 	})
 
 	Expect(err).NotTo(HaveOccurred())
@@ -141,6 +140,11 @@ var _ = BeforeSuite(func(done Done) {
 
 	k8sClient, err = client.New(testEnv.Config, client.Options{})
 	Expect(err).NotTo(HaveOccurred())
+
+	err = k8sClient.Create(context.Background(), &corev1.Namespace{
+		ObjectMeta: metav1.ObjectMeta{Name: "test"},
+	})
+	Expect(err).ToNot(HaveOccurred())
 
 	testNs := "default"
 	os.Setenv("POD_NAMESPACE", testNs)

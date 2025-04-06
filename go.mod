@@ -1,6 +1,8 @@
 module github.com/stolostron/multicloud-operators-application
 
-go 1.21
+go 1.23.0
+
+toolchain go1.23.8
 
 require (
 	github.com/ghodss/yaml v1.0.1-0.20190212211648-25d852aebe32
@@ -57,7 +59,7 @@ require (
 	golang.org/x/exp v0.0.0-20240416160154-fe59bbe5cc7f // indirect
 	golang.org/x/net v0.34.0 // indirect
 	golang.org/x/oauth2 v0.19.0 // indirect
-	golang.org/x/sys v0.29.0 // indirect
+	golang.org/x/sys v0.32.0 // indirect
 	golang.org/x/term v0.28.0 // indirect
 	golang.org/x/text v0.21.0 // indirect
 	golang.org/x/time v0.5.0 // indirect

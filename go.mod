@@ -1,6 +1,8 @@
 module github.com/stolostron/multicloud-operators-application
 
-go 1.21
+go 1.23
+
+toolchain go1.23.8
 
 require (
 	github.com/ghodss/yaml v1.0.1-0.20190212211648-25d852aebe32
@@ -73,7 +75,7 @@ require (
 	k8s.io/utils v0.0.0-20240310230437-4693a0247e57 // indirect
 	open-cluster-management.io/api v0.13.0 // indirect
 	open-cluster-management.io/multicloud-operators-channel v0.13.1-0.20240423040139-ad986cafc6e8 // indirect
-	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect
+	sigs.k8s.io/json v0.0.0-20241014173422-cfa47c3a1cc8 // indirect
 	sigs.k8s.io/structured-merge-diff/v4 v4.4.1 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )

@@ -1,6 +1,6 @@
-FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 
-RUN microdnf update && \
+RUN microdnf update -y && \
     microdnf clean all
 
 ENV OPERATOR=/usr/local/bin/multicluster-operators-application \

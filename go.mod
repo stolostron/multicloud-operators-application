@@ -18,7 +18,7 @@ require (
 	k8s.io/klog v1.0.0
 	open-cluster-management.io/multicloud-operators-subscription v0.13.1-0.20240423145504-847c2b572649
 	sigs.k8s.io/application v0.8.3
-	sigs.k8s.io/controller-runtime v0.17.3
+	sigs.k8s.io/controller-runtime v0.20.4
 )
 
 require (

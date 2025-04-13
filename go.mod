@@ -73,7 +73,7 @@ require (
 	k8s.io/component-base v0.27.4 // indirect
 	k8s.io/klog/v2 v2.90.1 // indirect
 	k8s.io/kube-openapi v0.0.0-20230501164219-8b0f38b5fd1f // indirect
-	k8s.io/utils v0.0.0-20230406110748-d93618cff8a2 // indirect
+	k8s.io/utils v0.0.0-20250321185631-1f6e0b77f77e // indirect
 	open-cluster-management.io/api v0.11.1-0.20230727093131-915f5826cff9 // indirect
 	open-cluster-management.io/multicloud-operators-channel v0.10.1-0.20230316173315-10f48e51f3aa // indirect
 	sigs.k8s.io/json v0.0.0-20221116044647-bc3834ca7abd // indirect

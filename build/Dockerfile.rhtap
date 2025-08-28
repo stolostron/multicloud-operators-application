@@ -15,6 +15,18 @@ ENV OPERATOR=/usr/local/bin/multicluster-operators-application \
     USER_UID=1001 \
     USER_NAME=multicluster-operators-application
 
+LABEL \
+    name="multicloud-operators-application" \
+    com.redhat.component="multicloud-operators-application" \
+    description="Multicloud operators application" \
+    maintainer="acm-contact@redhat.com" \
+    io.k8s.description="Multicloud operators application" \
+    org.label-schema.license="Red Hat Advanced Cluster Management for Kubernetes EULA" \
+    org.label-schema.schema-version="1.0" \
+    summary="Multicloud operators application" \
+    io.k8s.display-name="Multicloud operators application" \
+    io.openshift.tags="mce acm multicloud-operators-application"
+
 # copy applcation CRD
 COPY --from=plugin-builder /go/src/github.com/stolostron/multicluster-operators-application/deploy/crds/*.yaml  /usr/local/etc/application/crds/
 

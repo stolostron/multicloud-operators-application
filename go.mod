@@ -80,4 +80,7 @@ require (
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
 
-replace k8s.io/client-go => k8s.io/client-go v0.29.4
+replace (
+	github.com/elazarl/goproxy => github.com/elazarl/goproxy v0.0.0-20231117061959-7cc037d33fb5 //CVE-2023-37788 fix
+	k8s.io/client-go => k8s.io/client-go v0.29.4
+)

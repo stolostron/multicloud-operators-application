@@ -29,7 +29,7 @@ import (
 
 type AppValidator struct {
 	client.Client
-	decoder *admission.Decoder
+	decoder admission.Decoder
 }
 
 // AppValidator denys a application creat/update if the application had bad input like this
@@ -70,7 +70,7 @@ func (v *AppValidator) Handle(_ context.Context, req admission.Request) admissio
 // A decoder will be automatically injected.
 
 // InjectDecoder injects the decoder.
-func (v *AppValidator) InjectDecoder(d *admission.Decoder) error {
+func (v *AppValidator) InjectDecoder(d admission.Decoder) error {
 	v.decoder = d
 	return nil
 }

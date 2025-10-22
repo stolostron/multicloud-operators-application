@@ -25,9 +25,10 @@ PWD := $(shell pwd)
 BASE_DIR := $(shell basename $(PWD))
 
 # Keep an existing GOPATH, make a private one if it is undefined
-GOPATH_DEFAULT := $(PWD)/.go
-export GOPATH ?= $(GOPATH_DEFAULT)
-GOBIN_DEFAULT := $(GOPATH)/bin
+# GOPATH_DEFAULT := $(PWD)/.go
+# export GOPATH ?= $(GOPATH_DEFAULT)
+# Using default GOPATH from go env
+GOBIN_DEFAULT := $(shell go env GOPATH)/bin
 export GOBIN ?= $(GOBIN_DEFAULT)
 TESTARGS_DEFAULT := "-v"
 export TESTARGS ?= $(TESTARGS_DEFAULT)
@@ -53,14 +54,6 @@ GITHUB_USER := $(shell echo $(GITHUB_USER) | sed 's/@/%40/g')
 GITHUB_TOKEN ?=
 
 USE_VENDORIZED_BUILD_HARNESS ?=
-
-ifndef USE_VENDORIZED_BUILD_HARNESS
-	ifeq ($(TRAVIS_BUILD),1)
-	-include $(shell curl -H 'Authorization: token ${GITHUB_TOKEN}' -H 'Accept: application/vnd.github.v4.raw' -L https://api.github.com/repos/stolostron/build-harness-extensions/contents/templates/Makefile.build-harness-bootstrap -o .build-harness-bootstrap; echo .build-harness-bootstrap)
-	endif
-else
--include vbh/.build-harness-vendorized
-endif
 
 default::
 	@echo "Build Harness Bootstrapped"

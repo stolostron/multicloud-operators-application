@@ -57,7 +57,7 @@ type deployableMapper struct {
 	client.Client
 }
 
-func (mapper *deployableMapper) Map(ctx context.Context, obj client.Object) []reconcile.Request {
+func (mapper *deployableMapper) Map(ctx context.Context, obj *dplv1.Deployable) []reconcile.Request {
 	//enqueue all applications under these namespaces including the deployable namespace plus all of subscription namespaces related to the deployable
 	dplName := obj.GetName()
 	dplNamespace := obj.GetNamespace()
@@ -113,7 +113,7 @@ type subscriptionMapper struct {
 	client.Client
 }
 
-func (mapper *subscriptionMapper) Map(ctx context.Context, obj client.Object) []reconcile.Request {
+func (mapper *subscriptionMapper) Map(ctx context.Context, obj *subv1.Subscription) []reconcile.Request {
 	//enqueue all applications under the subscription namespace
 	subName := obj.GetName()
 	subNamespace := obj.GetNamespace()
@@ -151,7 +151,7 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	}
 
 	// Watch for changes to primary resource Application
-	err = c.Watch(source.Kind(mgr.GetCache(), &appv1beta1.Application{}), &handler.EnqueueRequestForObject{})
+	err = c.Watch(source.Kind(mgr.GetCache(), &appv1beta1.Application{}, &handler.TypedEnqueueRequestForObject[*appv1beta1.Application]{}))
 	if err != nil {
 		return err
 	}
@@ -160,9 +160,9 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	dmapper := &deployableMapper{mgr.GetClient()}
 
 	err = c.Watch(
-		source.Kind(mgr.GetCache(), &dplv1.Deployable{}),
-		handler.EnqueueRequestsFromMapFunc(dmapper.Map),
-		utils.DeployablePredicateFunc)
+		source.Kind(mgr.GetCache(), &dplv1.Deployable{},
+			handler.TypedEnqueueRequestsFromMapFunc(dmapper.Map),
+			utils.DeployablePredicateFunc))
 	if err != nil {
 		return err
 	}
@@ -171,9 +171,9 @@ func add(mgr manager.Manager, r reconcile.Reconciler) error {
 	smapper := &subscriptionMapper{mgr.GetClient()}
 
 	err = c.Watch(
-		source.Kind(mgr.GetCache(), &subv1.Subscription{}),
-		handler.EnqueueRequestsFromMapFunc(smapper.Map),
-		utils.SubscriptionPredicateFunc)
+		source.Kind(mgr.GetCache(), &subv1.Subscription{},
+			handler.TypedEnqueueRequestsFromMapFunc(smapper.Map),
+			utils.SubscriptionPredicateFunc))
 	if err != nil {
 		return err
 	}

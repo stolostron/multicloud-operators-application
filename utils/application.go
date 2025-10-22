@@ -16,10 +16,10 @@ import (
 )
 
 // DeployablePredicateFunc defines predicate function for deployable watch in deployable controller
-var DeployablePredicateFunc = predicate.Funcs{
-	UpdateFunc: func(e event.UpdateEvent) bool {
-		newdpl := e.ObjectNew.(*dplv1.Deployable)
-		olddpl := e.ObjectOld.(*dplv1.Deployable)
+var DeployablePredicateFunc = predicate.TypedFuncs[*dplv1.Deployable]{
+	UpdateFunc: func(e event.TypedUpdateEvent[*dplv1.Deployable]) bool {
+		newdpl := e.ObjectNew
+		olddpl := e.ObjectOld
 
 		if len(newdpl.GetFinalizers()) > 0 {
 			return true
@@ -61,10 +61,10 @@ var DeployablePredicateFunc = predicate.Funcs{
 }
 
 // SubscriptionPredicateFunc filters status update
-var SubscriptionPredicateFunc = predicate.Funcs{
-	UpdateFunc: func(e event.UpdateEvent) bool {
-		subOld := e.ObjectOld.(*subv1.Subscription)
-		subNew := e.ObjectNew.(*subv1.Subscription)
+var SubscriptionPredicateFunc = predicate.TypedFuncs[*subv1.Subscription]{
+	UpdateFunc: func(e event.TypedUpdateEvent[*subv1.Subscription]) bool {
+		subOld := e.ObjectOld
+		subNew := e.ObjectNew
 
 		// need to process delete with finalizers
 		if len(subNew.GetFinalizers()) > 0 {

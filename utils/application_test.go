@@ -232,7 +232,7 @@ func TestPredicate(t *testing.T) {
 	// Test SubscriptionPredicateFunc
 	instance := SubscriptionPredicateFunc
 
-	updateEvt := event.UpdateEvent{
+	updateEvt := event.TypedUpdateEvent[*subv1.Subscription]{
 		ObjectOld: oldSubscription,
 		ObjectNew: newSubscription,
 	}
@@ -244,7 +244,7 @@ func TestPredicate(t *testing.T) {
 	newSubscription.Labels = nil
 
 	newSubscription.Finalizers = []string{"deploy-final"}
-	updateEvt = event.UpdateEvent{
+	updateEvt = event.TypedUpdateEvent[*subv1.Subscription]{
 		ObjectOld: oldSubscription,
 		ObjectNew: newSubscription,
 	}
@@ -255,7 +255,7 @@ func TestPredicate(t *testing.T) {
 	newSubscription.Finalizers = nil
 
 	newSubscription.Annotations = map[string]string{"anno": "value"}
-	updateEvt = event.UpdateEvent{
+	updateEvt = event.TypedUpdateEvent[*subv1.Subscription]{
 		ObjectOld: oldSubscription,
 		ObjectNew: newSubscription,
 	}
@@ -265,7 +265,7 @@ func TestPredicate(t *testing.T) {
 
 	newSubscription.Annotations = nil
 
-	updateEvt = event.UpdateEvent{
+	updateEvt = event.TypedUpdateEvent[*subv1.Subscription]{
 		ObjectOld: oldSubscription,
 		ObjectNew: newSubscription,
 	}
@@ -276,7 +276,7 @@ func TestPredicate(t *testing.T) {
 	newSubscription.Spec = subv1.SubscriptionSpec{}
 	oldSubscription.Spec = subv1.SubscriptionSpec{}
 
-	updateEvt = event.UpdateEvent{
+	updateEvt = event.TypedUpdateEvent[*subv1.Subscription]{
 		ObjectOld: oldSubscription,
 		ObjectNew: newSubscription,
 	}
@@ -287,7 +287,7 @@ func TestPredicate(t *testing.T) {
 	newSubscription.Status = subv1.SubscriptionStatus{Phase: "phase"}
 	oldSubscription.Status = subv1.SubscriptionStatus{Phase: "phase"}
 
-	updateEvt = event.UpdateEvent{
+	updateEvt = event.TypedUpdateEvent[*subv1.Subscription]{
 		ObjectOld: oldSubscription,
 		ObjectNew: newSubscription,
 	}
@@ -296,79 +296,79 @@ func TestPredicate(t *testing.T) {
 	g.Expect(ret).To(gomega.Equal(false))
 
 	// Test DeployablePredicateFunc
-	instance = DeployablePredicateFunc
+	instanceDpl := DeployablePredicateFunc
 
-	updateEvt = event.UpdateEvent{
+	updateEvtDpl := event.TypedUpdateEvent[*dplv1.Deployable]{
 		ObjectOld: oldDeployable,
 		ObjectNew: newDeployable,
 	}
 
-	ret = instance.Update(updateEvt)
+	ret = instanceDpl.Update(updateEvtDpl)
 	g.Expect(ret).To(gomega.Equal(true))
 
-	updateEvt = event.UpdateEvent{
+	updateEvtDpl = event.TypedUpdateEvent[*dplv1.Deployable]{
 		ObjectOld: oldDeployable2,
 		ObjectNew: newDeployable2,
 	}
 
 	newDeployable.Finalizers = []string{"deploy-final"}
-	updateEvt = event.UpdateEvent{
+	updateEvtDpl = event.TypedUpdateEvent[*dplv1.Deployable]{
 		ObjectOld: oldDeployable,
 		ObjectNew: newDeployable,
 	}
 
-	ret = instance.Update(updateEvt)
+	ret = instanceDpl.Update(updateEvtDpl)
 	g.Expect(ret).To(gomega.Equal(true))
 
 	newDeployable.Finalizers = nil
 
 	newDeployable.Annotations = map[string]string{"anno": "value"}
-	updateEvt = event.UpdateEvent{
+	updateEvtDpl = event.TypedUpdateEvent[*dplv1.Deployable]{
 		ObjectOld: oldDeployable,
 		ObjectNew: newDeployable,
 	}
 
-	ret = instance.Update(updateEvt)
+	ret = instanceDpl.Update(updateEvtDpl)
 	g.Expect(ret).To(gomega.Equal(true))
 
 	newDeployable.Annotations = nil
 
 	newDeployable.Labels = map[string]string{"label": "value"}
-	updateEvt = event.UpdateEvent{
+	updateEvtDpl = event.TypedUpdateEvent[*dplv1.Deployable]{
 		ObjectOld: oldDeployable,
 		ObjectNew: newDeployable,
 	}
 
-	ret = instance.Update(updateEvt)
+	ret = instanceDpl.Update(updateEvtDpl)
 	g.Expect(ret).To(gomega.Equal(true))
 
 	newDeployable.Labels = nil
 	newDeployable.Spec.Template.Raw = nil
 	oldDeployable.Spec.Template.Raw = nil
-	updateEvt = event.UpdateEvent{
+	updateEvtDpl = event.TypedUpdateEvent[*dplv1.Deployable]{
 		ObjectOld: oldDeployable,
 		ObjectNew: newDeployable,
 	}
 
-	ret = instance.Update(updateEvt)
+	ret = instanceDpl.Update(updateEvtDpl)
 	g.Expect(ret).To(gomega.Equal(true))
 
 	oldDeployable.Spec.Template.Raw = []byte{102, 97, 108, 99, 111, 110}
-	updateEvt = event.UpdateEvent{
+	updateEvtDpl = event.TypedUpdateEvent[*dplv1.Deployable]{
 		ObjectOld: oldDeployable,
 		ObjectNew: newDeployable,
 	}
 
-	ret = instance.Update(updateEvt)
+	ret = instanceDpl.Update(updateEvtDpl)
 	g.Expect(ret).To(gomega.Equal(true))
 
 	oldDeployable.Spec.Template.Raw = nil
 	newDeployable.Spec.Template.Raw = []byte{102, 97, 108, 99, 111, 110}
-	updateEvt = event.UpdateEvent{
+	updateEvtDpl = event.TypedUpdateEvent[*dplv1.Deployable]{
 		ObjectOld: oldDeployable,
 		ObjectNew: newDeployable,
 	}
 
-	ret = instance.Update(updateEvt)
+	ret = instanceDpl.Update(updateEvtDpl)
 	g.Expect(ret).To(gomega.Equal(true))
 }

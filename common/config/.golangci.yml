@@ -82,6 +82,7 @@ linters:
     - testpackage
     - thelper
     - usestdlibvars
+    - usetesting
     - varnamelen
     - wastedassign
     - wrapcheck

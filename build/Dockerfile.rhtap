@@ -16,7 +16,8 @@ ENV OPERATOR=/usr/local/bin/multicluster-operators-application \
     USER_NAME=multicluster-operators-application
 
 LABEL \
-    name="multicloud-operators-application" \
+    name="rhacm2/multicluster-operators-application-rhel9" \
+    cpe="cpe:/a:redhat:acm:2.12::el9" \
     com.redhat.component="multicloud-operators-application" \
     description="Multicloud operators application" \
     maintainer="acm-contact@redhat.com" \

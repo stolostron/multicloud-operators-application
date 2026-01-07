@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Copyright 2019 The Kubernetes Authors.
+# Copyright 2021 The Kubernetes Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,6 +14,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.64.8
+
 export GOLANGCI_LINT_CACHE=/tmp/golangci-cache
-export GOROOT=`go env GOROOT`
-GOGC=25 golangci-lint run -c ./common/config/.golangci.yml
+export GOROOT=$(go env GOROOT)
+export GOPATH=$(go env GOPATH)
+rm -rf $GOLANGCI_LINT_CACHE
+GOGC=25 "${GOPATH}/bin/golangci-lint" run -c ./common/config/.golangci.yml

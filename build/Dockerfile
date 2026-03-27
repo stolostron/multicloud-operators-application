@@ -1,7 +1,13 @@
+FROM registry.ci.openshift.org/stolostron/builder:go1.25-linux AS builder
+
+WORKDIR /go/src/open-cluster-management.io/multicloud-operators-application
+COPY . .
+RUN make -f Makefile build
+
 FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
 
 RUN microdnf update -y && \
-    microdnf clean all
+     microdnf clean all
 
 ENV OPERATOR=/usr/local/bin/multicluster-operators-application \
     USER_UID=1001 \
@@ -11,7 +17,7 @@ ENV OPERATOR=/usr/local/bin/multicluster-operators-application \
 COPY deploy/crds/*.yaml  /usr/local/etc/application/crds/
 
 # install operator binary
-COPY build/_output/bin/multicluster-operators-application ${OPERATOR}
+COPY --from=builder go/src/open-cluster-management.io/multicloud-operators-application/build/_output/bin/multicluster-operators-application ${OPERATOR}
 
 COPY build/bin /usr/local/bin
 RUN  /usr/local/bin/user_setup

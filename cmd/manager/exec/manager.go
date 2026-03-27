@@ -92,7 +92,10 @@ func RunManager() {
 
 	certDir := filepath.Join(os.TempDir(), "k8s-webhook-server", "application-serving-certs")
 
-	webhookOption := k8swebhook.Options{CertDir: certDir}
+	webhookOption := k8swebhook.Options{
+		CertDir: certDir,
+		Port:    appWebhook.WebhookPort,
+	}
 	webhookOption.TLSOpts = append(webhookOption.TLSOpts, func(config *tls.Config) {
 		config.MinVersion = apis.TLSMinVersionInt
 	})

@@ -119,6 +119,17 @@ build-images: build
 	@docker build -t ${IMAGE_NAME_AND_VERSION} -f build/Dockerfile .
 	@docker tag ${IMAGE_NAME_AND_VERSION} $(REGISTRY)/$(IMG):latest
 
+build-images-non-amd64:
+	@if docker buildx ls | grep -q "local-builder"; then \
+		echo "Removing existing local-builder..."; \
+		docker buildx rm local-builder; \
+	fi
+
+	docker buildx create --name local-builder --use
+	docker buildx inspect local-builder --bootstrap
+	docker buildx build --platform linux/amd64 -t ${IMAGE_NAME_AND_VERSION} -f build/Dockerfile --load .
+	docker buildx rm local-builder
+
 build-latest-community-operator:
 	docker tag ${COMPONENT_DOCKER_REPO}/${COMPONENT_NAME}:${COMPONENT_VERSION}${COMPONENT_TAG_EXTENSION} ${COMPONENT_DOCKER_REPO}/${COMPONENT_NAME}:community-latest
 	docker login ${COMPONENT_DOCKER_REPO} -u ${DOCKER_USER} -p ${DOCKER_PASS}

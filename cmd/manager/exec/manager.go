@@ -21,8 +21,10 @@ import (
 	"os"
 	"path/filepath"
 
+	ocinfrav1 "github.com/openshift/api/config/v1"
 	"github.com/stolostron/multicloud-operators-application/pkg/apis"
 	"github.com/stolostron/multicloud-operators-application/pkg/controller"
+	"github.com/stolostron/multicloud-operators-application/pkg/utils/tlsconfig"
 	"github.com/stolostron/multicloud-operators-application/utils"
 	appWebhook "github.com/stolostron/multicloud-operators-application/webhook"
 
@@ -34,6 +36,7 @@ import (
 	subv1 "open-cluster-management.io/multicloud-operators-subscription/pkg/apis/apps/v1"
 
 	"k8s.io/apimachinery/pkg/api/errors"
+	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/client-go/rest"
 	"k8s.io/klog"
 	ctrl "sigs.k8s.io/controller-runtime"
@@ -68,6 +71,10 @@ func RunManager() {
 		os.Exit(1)
 	}
 
+	schemeForTLS := runtime.NewScheme()
+	_ = ocinfrav1.AddToScheme(schemeForTLS)
+	tlsconfig.InitClusterTLSConfig(context.Background(), cfg, schemeForTLS)
+
 	// Register application CRD into hub kubernetes cluster
 	err = utils.CheckAndInstallCRD(cfg, options.ApplicationCRDFile)
 	if err != nil {
@@ -97,7 +104,9 @@ func RunManager() {
 		Port:    appWebhook.WebhookPort,
 	}
 	webhookOption.TLSOpts = append(webhookOption.TLSOpts, func(config *tls.Config) {
-		config.MinVersion = apis.TLSMinVersionInt
+		c := tlsconfig.GetClusterTLSConfig()
+		config.MinVersion = c.MinVersion
+		config.CipherSuites = c.CipherSuites
 	})
 	webhookServer := k8swebhook.NewServer(webhookOption)
 

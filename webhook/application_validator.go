@@ -65,12 +65,3 @@ func (v *AppValidator) Handle(_ context.Context, req admission.Request) admissio
 
 	return admission.Allowed("")
 }
-
-// AppValidator implements admission.DecoderInjector.
-// A decoder will be automatically injected.
-
-// InjectDecoder injects the decoder.
-func (v *AppValidator) InjectDecoder(d admission.Decoder) error {
-	v.decoder = d
-	return nil
-}

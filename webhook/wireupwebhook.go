@@ -35,6 +35,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/manager"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
+	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 
 	appv1beta1 "sigs.k8s.io/application/api/v1beta1"
 )
@@ -63,10 +64,10 @@ func WireUpWebhook(clt client.Client, mgr manager.Manager, whk webhook.Server, c
 	klog.Info("registering webhooks to the webhook server")
 
 	appValidator := &AppValidator{
-		Client: mgr.GetClient(),
+		Client:  mgr.GetClient(),
+		decoder: admission.NewDecoder(mgr.GetScheme()),
 	}
 
-	// The decoder will be injected by the webhook server
 	whk.Register(ValidatorPath, &webhook.Admission{
 		Handler: appValidator,
 	})

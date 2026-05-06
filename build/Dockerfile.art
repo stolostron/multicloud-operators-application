@@ -1,0 +1,42 @@
+FROM registry-proxy.engineering.redhat.com/rh-osbs/openshift-golang-builder:v1.25.8 AS plugin-builder
+
+WORKDIR /go/src/github.com/stolostron/multicluster-operators-application
+COPY . .
+RUN rm -fr vendor && \
+        go mod vendor && \
+        CGO_ENABLED=1 GOEXPERIMENT=strictfipsruntime make -f Makefile.prow build
+
+FROM registry-proxy.engineering.redhat.com/ubi9/ubi-minimal:latest
+
+RUN microdnf update -y && \
+    microdnf clean all
+
+ENV OPERATOR=/usr/local/bin/multicluster-operators-application \
+    USER_UID=1001 \
+    USER_NAME=multicluster-operators-application
+
+LABEL \
+    name="rhacm2/multicluster-operators-application-rhel9" \
+    cpe="cpe:/a:redhat:acm:2.16::el9" \
+    com.redhat.component="multicloud-operators-application" \
+    description="Multicloud operators application" \
+    maintainer="acm-contact@redhat.com" \
+    io.k8s.description="Multicloud operators application" \
+    org.label-schema.license="Red Hat Advanced Cluster Management for Kubernetes EULA" \
+    org.label-schema.schema-version="1.0" \
+    summary="Multicloud operators application" \
+    io.k8s.display-name="Multicloud operators application" \
+    io.openshift.tags="mce acm multicloud-operators-application"
+
+# copy applcation CRD
+COPY --from=plugin-builder /go/src/github.com/stolostron/multicluster-operators-application/deploy/crds/*.yaml  /usr/local/etc/application/crds/
+
+# install operator binary
+COPY --from=plugin-builder /go/src/github.com/stolostron/multicluster-operators-application/build/_output/bin/multicluster-operators-application ${OPERATOR}
+
+COPY build/bin /usr/local/bin
+RUN  /usr/local/bin/user_setup
+
+ENTRYPOINT ["/usr/local/bin/entrypoint"]
+
+USER ${USER_UID}

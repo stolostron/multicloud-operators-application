@@ -89,6 +89,15 @@ check: lint
 #    eg: lint: lint-go lint-yaml
 lint: lint-all
 
+.PHONY: lint-all
+
+lint-all:lint-go
+
+.PHONY: lint-go
+
+lint-go:
+	@true
+
 ############################################################
 # test section
 ############################################################

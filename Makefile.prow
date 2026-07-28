@@ -74,4 +74,5 @@ ensure-kubebuilder-tools:
 .PHONY: test
 
 test: ensure-kubebuilder-tools
+	go clean -cache
 	KUBEBUILDER_ASSETS=$$(setup-envtest use -i -p path $(ENVTEST_K8S_VERSION)) go test -timeout 300s -v ./pkg/... -coverprofile=coverage.out

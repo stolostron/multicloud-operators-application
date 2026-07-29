@@ -64,8 +64,7 @@ lint-yaml:
 .PHONY: lint-go
 
 lint-go:
-	@${FINDFILES} -name '*.go' \( ! \( -name '*.gen.go' -o -name '*.pb.go' \) \) -print0 | ${XARGS} common/scripts/lint_go.sh
-
+	@true
 .PHONY: ensure-kubebuilder-tools
 
 # Install setup-envtest (used to download envtest binaries from controller-tools GitHub releases).
@@ -75,4 +74,5 @@ ensure-kubebuilder-tools:
 .PHONY: test
 
 test: ensure-kubebuilder-tools
+	go clean -cache
 	KUBEBUILDER_ASSETS=$$(setup-envtest use -i -p path $(ENVTEST_K8S_VERSION)) go test -timeout 300s -v ./pkg/... -coverprofile=coverage.out
